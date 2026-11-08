@@ -1,0 +1,825 @@
+{
+  "asOf": 1793335330940,
+  "source": "POST /api/session/list {} @127.0.0.1:<port> (representative lane)",
+  "workspaces": [
+    "workspace-alpha",
+    "workspace-beta",
+    "workspace-gamma",
+    "workspace-delta",
+    "workspace-epsilon",
+    "workspace-zeta"
+  ],
+  "sessions": [
+    {
+      "id": "session-00000001-0000-4000-8000-000000000001",
+      "title": "Sample task 1",
+      "ws": "workspace-epsilon",
+      "running": true,
+      "updatedAt": 1793334940195,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000002-0000-4000-8000-000000000002",
+      "title": "Sample task 2",
+      "ws": "workspace-alpha",
+      "running": true,
+      "updatedAt": 1793334741184,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "turn-error",
+        "time": 1793278811017,
+        "message": "413 Maximum request body size 5242880 exceeded."
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000003-0000-4000-8000-000000000003",
+      "title": "Sample task 3",
+      "ws": "workspace-alpha",
+      "running": true,
+      "updatedAt": 1793334599276,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793274057746,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-29 20:17:40][20261029194056e9cb52d104df44af]\"},\"request_id\":\"20261029194056e9cb52d104df44af\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000004-0000-4000-8000-000000000004",
+      "title": "Sample task 4",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793333305616,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000005-0000-4000-8000-000000000005",
+      "title": "Sample task 5",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793332724996,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "aborted",
+        "time": 1793332802900,
+        "message": "turn aborted: {'kind': 'user'}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000006-0000-4000-8000-000000000006",
+      "title": "Sample task 6",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793294709098,
+      "pinned": true,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793254702396,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261029141822e610036d6e6248b9]\"},\"request_id\":\"20261029141822e610036d6e6248b9\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000007-0000-4000-8000-000000000007",
+      "title": "Sample task 7",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793293332075,
+      "pinned": true,
+      "error": {
+        "level": "red",
+        "kind": "turn-error",
+        "time": 1793282903334,
+        "message": "500 {\"type\":\"error\",\"error\":{\"type\":\"api_error\",\"code\":\"1234\",\"message\":\"[1234][Internal network failure, error id: 202610292207401fc2e45e7d2a4e30, please try again later.][202610292207401fc2e45e7d2a4e30]\"},\"request_id\":\"202610292207401fc2e45e7d2a4e30\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000008-0000-4000-8000-000000000008",
+      "title": "Sample task 8",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793293225080,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000009-0000-4000-8000-000000000009",
+      "title": "Sample task 9",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793293169991,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793260457310,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][202610291554152628d186a21d4a25]\"},\"request_id\":\"202610291554152628d186a21d4a25\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000010-0000-4000-8000-000000000010",
+      "title": "Sample task 10",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793282689676,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793282950510,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][2026102922090890fe76499e444b0e]\"},\"request_id\":\"2026102922090890fe76499e444b0e\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000011-0000-4000-8000-000000000011",
+      "title": "Sample task 11",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793282564750,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793263145401,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-29 20:17:40][202610291639046730bf68bcb6442f]\"},\"request_id\":\"202610291639046730bf68bcb6442f\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000012-0000-4000-8000-000000000012",
+      "title": "Sample task 12",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793263804767,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793263805714,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-29 20:17:40][20261029165005189a6ee369354a1b]\"},\"request_id\":\"20261029165005189a6ee369354a1b\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000013-0000-4000-8000-000000000013",
+      "title": "Sample task 13",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793263737994,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793263738835,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-29 20:17:40][20261029164858a9f5e1f1365442e2]\"},\"request_id\":\"20261029164858a9f5e1f1365442e2\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000014-0000-4000-8000-000000000014",
+      "title": "Sample task 14",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793263534632,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793263535444,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-29 20:17:40][20261029164535d8d2c12ebef04563]\"},\"request_id\":\"20261029164535d8d2c12ebef04563\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000015-0000-4000-8000-000000000015",
+      "title": "Sample task 15",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793262964293,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000016-0000-4000-8000-000000000016",
+      "title": "Sample task 16",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793260436566,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793261191438,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261029160631e8c7e15df139492b]\"},\"request_id\":\"20261029160631e8c7e15df139492b\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000017-0000-4000-8000-000000000017",
+      "title": "Sample task 17",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793260094779,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000018-0000-4000-8000-000000000018",
+      "title": "Sample task 18",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793256503149,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000019-0000-4000-8000-000000000019",
+      "title": "Sample task 19",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793256484632,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000020-0000-4000-8000-000000000020",
+      "title": "Sample task 20",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793256313219,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793256111338,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261029144150b2e902f8b1f94e84]\"},\"request_id\":\"20261029144150b2e902f8b1f94e84\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000021-0000-4000-8000-000000000021",
+      "title": "Sample task 21",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793255640543,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000022-0000-4000-8000-000000000022",
+      "title": "Sample task 22",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793255621994,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000023-0000-4000-8000-000000000023",
+      "title": "Sample task 23",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793255462230,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000024-0000-4000-8000-000000000024",
+      "title": "Sample task 24",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793255354472,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000025-0000-4000-8000-000000000025",
+      "title": "Sample task 25",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793253832082,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000026-0000-4000-8000-000000000026",
+      "title": "Sample task 26",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793253729438,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000027-0000-4000-8000-000000000027",
+      "title": "Sample task 27",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793253510864,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000028-0000-4000-8000-000000000028",
+      "title": "Sample task 28",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793253304375,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000029-0000-4000-8000-000000000029",
+      "title": "Sample task 29",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793250410967,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000030-0000-4000-8000-000000000030",
+      "title": "Sample task 30",
+      "ws": "workspace-gamma",
+      "running": false,
+      "updatedAt": 1793249983815,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000031-0000-4000-8000-000000000031",
+      "title": "Sample task 31",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793248640327,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793250328466,
+        "message": "429: {\"message\":\"No deployments available for selected model, Try again in 10 seconds. Passed model=gemma-4-12b. pre-call-checks=False, cooldown_list=['aea942d9398e4f95b2b3a3e84fc8939fc558fc0786a1c2f3f3841c2e39c43a8b', 'e6815ed09f34a7198d712e3f9bf39b8dc7e2f2a03a6aa61f1ec186ae0ad0"
+      },
+      "errCount": 2
+    },
+    {
+      "id": "session-00000032-0000-4000-8000-000000000032",
+      "title": "Sample task 32",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793216778456,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793214572047,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][2026102903093206d7a9a7179b40df]\"},\"request_id\":\"2026102903093206d7a9a7179b40df\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000033-0000-4000-8000-000000000033",
+      "title": "Sample task 33",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793212806167,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000034-0000-4000-8000-000000000034",
+      "title": "Sample task 34",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793205122496,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000035-0000-4000-8000-000000000035",
+      "title": "Sample task 35",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793196488802,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "aborted",
+        "time": 1793196493849,
+        "message": "turn aborted: {'kind': 'user'}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000036-0000-4000-8000-000000000036",
+      "title": "Sample task 36",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793196215317,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000037-0000-4000-8000-000000000037",
+      "title": "Sample task 37",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793196091741,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "aborted",
+        "time": 1793196093935,
+        "message": "turn aborted: {'kind': 'user'}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000038-0000-4000-8000-000000000038",
+      "title": "Sample task 38",
+      "ws": "workspace-alpha",
+      "running": false,
+      "updatedAt": 1793194718304,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000039-0000-4000-8000-000000000039",
+      "title": "Sample task 39",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793174887462,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793176173970,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][202610281629337a188d3735334959]\"},\"request_id\":\"202610281629337a188d3735334959\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000040-0000-4000-8000-000000000040",
+      "title": "Sample task 40",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793173442601,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793173464497,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261028154423696af77590e74598]\"},\"request_id\":\"20261028154423696af77590e74598\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000041-0000-4000-8000-000000000041",
+      "title": "Sample task 41",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793173315424,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793172709433,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][202610281531480015f26681a941c2]\"},\"request_id\":\"202610281531480015f26681a941c2\"}"
+      },
+      "errCount": 2
+    },
+    {
+      "id": "session-00000042-0000-4000-8000-000000000042",
+      "title": "Sample task 42",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793173216330,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793172590929,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261028152950a85379e9a7134220]\"},\"request_id\":\"20261028152950a85379e9a7134220\"}"
+      },
+      "errCount": 2
+    },
+    {
+      "id": "session-00000043-0000-4000-8000-000000000043",
+      "title": "Sample task 43",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793172509113,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793171590051,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][2026102815130910c9e9e9ddc048c5]\"},\"request_id\":\"2026102815130910c9e9e9ddc048c5\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000044-0000-4000-8000-000000000044",
+      "title": "Sample task 44",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793172494292,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793175480975,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261028161800e561d500dfbc4abb]\"},\"request_id\":\"20261028161800e561d500dfbc4abb\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000045-0000-4000-8000-000000000045",
+      "title": "Sample task 45",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793170756889,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000046-0000-4000-8000-000000000046",
+      "title": "Sample task 46",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793170496874,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793170818431,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261028150017519fa023dc734d80]\"},\"request_id\":\"20261028150017519fa023dc734d80\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000047-0000-4000-8000-000000000047",
+      "title": "Sample task 47",
+      "ws": "workspace-gamma",
+      "running": false,
+      "updatedAt": 1793169055555,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000048-0000-4000-8000-000000000048",
+      "title": "Sample task 48",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793107101649,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "aborted",
+        "time": 1793097998296,
+        "message": "turn aborted: {'kind': 'user'}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000049-0000-4000-8000-000000000049",
+      "title": "Sample task 49",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793095038082,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "turn-error",
+        "time": 1793095038123,
+        "message": "provider \"example-provider\" model \"example-model\" does not support the requested feature"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000050-0000-4000-8000-000000000050",
+      "title": "Sample task 50",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793094788103,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000051-0000-4000-8000-000000000051",
+      "title": "Sample task 51",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793094784117,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000052-0000-4000-8000-000000000052",
+      "title": "Sample task 52",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793093432074,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000053-0000-4000-8000-000000000053",
+      "title": "Sample task 53",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793089524508,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793091743446,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261027170222ecebc296ac1e4a06]\"},\"request_id\":\"20261027170222ecebc296ac1e4a06\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000054-0000-4000-8000-000000000054",
+      "title": "Sample task 54",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793089418542,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000055-0000-4000-8000-000000000055",
+      "title": "Sample task 55",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793088877144,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000056-0000-4000-8000-000000000056",
+      "title": "Sample task 56",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793088786651,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000057-0000-4000-8000-000000000057",
+      "title": "Sample task 57",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793088777611,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000058-0000-4000-8000-000000000058",
+      "title": "Sample task 58",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793081730428,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000059-0000-4000-8000-000000000059",
+      "title": "Sample task 59",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793077650766,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000060-0000-4000-8000-000000000060",
+      "title": "Sample task 60",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793075085895,
+      "pinned": false,
+      "error": null,
+      "errCount": 0
+    },
+    {
+      "id": "session-00000061-0000-4000-8000-000000000061",
+      "title": "Sample task 61",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793022425670,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1792996618388,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261026143657182fa8e2007a45cb]\"},\"request_id\":\"20261026143657182fa8e2007a45cb\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000062-0000-4000-8000-000000000062",
+      "title": "Sample task 62",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793012886958,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793010301849,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][2026102618250051098e636d8b4f41]\"},\"request_id\":\"2026102618250051098e636d8b4f41\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000063-0000-4000-8000-000000000063",
+      "title": "Sample task 63",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1793007377727,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1793003076831,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1308\",\"message\":\"[1308][Usage limit reached for 5 hour. Your limit will reset at 2026-10-26 16:59:13][202610261624368bca974592254b9a]\"},\"request_id\":\"202610261624368bca974592254b9a\"}"
+      },
+      "errCount": 3
+    },
+    {
+      "id": "session-00000064-0000-4000-8000-000000000064",
+      "title": "Sample task 64",
+      "ws": "workspace-epsilon",
+      "running": false,
+      "updatedAt": 1792867661550,
+      "pinned": false,
+      "error": {
+        "level": "amber",
+        "kind": "turn-error",
+        "time": 1792859811041,
+        "message": "429 {\"type\":\"error\",\"error\":{\"type\":\"rate_limit_error\",\"code\":\"1302\",\"message\":\"[1302][Rate limit reached for requests][20261025003650b0e71ccb6fc440eb]\"},\"request_id\":\"20261025003650b0e71ccb6fc440eb\"}"
+      },
+      "errCount": 1
+    },
+    {
+      "id": "session-00000065-0000-4000-8000-000000000065",
+      "title": "Sample task 65",
+      "ws": null,
+      "running": false,
+      "updatedAt": 1792832752712,
+      "pinned": false,
+      "error": {
+        "level": "red",
+        "kind": "aborted",
+        "time": 1792833767015,
+        "message": "turn aborted: {'kind': 'disposed'}"
+      },
+      "errCount": 1
+    }
+  ],
+  "note": "running/blank/origin = representative; error = mined from session.v*.jsonl.zstd (turn/end reason.error / rate-limit text), titles and ids anonymized for the public repo"
+}
