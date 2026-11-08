@@ -55,16 +55,18 @@
 
 需要 DSH `>=0.2.0-rc.1`（安装时通过 `engines.dsh` 校验）。
 
+直接从 GitHub 安装 —— 无需 npm。在 DSH 网页界面打开 **插件 → 添加插件**，粘贴仓库地址即可；或者命令行：
+
 ```bash
-dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 ```
 
 就这样。该命令把包装进 profile；因为包声明了 `dsh.bundle.patch`，DSH 会自动注册插件的 cordis 补丁。重启 Web 车道（或刷新页面），**Focus** 区块就出现在 *Workspaces* 上方。
 
-也可以从 Git 安装而非 npm（效果相同）：
+包发布到 npm 之后，也可以用包名安装（效果相同）：
 
 ```bash
-dsh plugin --profile web add github:almazom/dsh-needs-attention
+dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 ```
 
 无构建步骤、无生命周期脚本、纯 JavaScript —— 安装时什么都不执行。

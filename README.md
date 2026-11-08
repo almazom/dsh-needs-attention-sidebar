@@ -55,16 +55,18 @@ Three design rules:
 
 Requires DSH `>=0.2.0-rc.1` (checked at install time via `engines.dsh`).
 
+Install straight from GitHub — no npm needed. In the DSH web UI open **Plugins → Add plugin** and paste the repository address, or run:
+
 ```bash
-dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 ```
 
 That's it. The command installs the package into the profile, and because the package declares `dsh.bundle.patch`, DSH auto-registers the plugin's cordis patch. Restart the web lane (or reload the page) and the **Focus** block appears above *Workspaces*.
 
-Install from git instead of npm (same effect):
+Once the package is also published to npm, the package name works as an alternative:
 
 ```bash
-dsh plugin --profile web add github:almazom/dsh-needs-attention
+dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 ```
 
 No build step, no lifecycle scripts, plain JavaScript — nothing runs on install.
