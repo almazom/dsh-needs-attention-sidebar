@@ -14,9 +14,15 @@ When you run many agent sessions, failures are quiet: a turn dies with a 429 or 
 
 Zero core edits: everything is a plugin — a server-side scan route plus a small client script that anchors into the existing sidebar DOM.
 
+![Demo: tab switching, dismiss with undo, collapse](screenshots/demo.gif)
+
 | In place | Attention | Working | Finished |
 |---|---|---|---|
 | ![The block sits above Workspaces](screenshots/sidebar-in-place.png) | ![Attention tab](screenshots/sidebar-attention.png) | ![Working tab](screenshots/sidebar-working.png) | ![Finished tab](screenshots/sidebar-finished.png) |
+
+| Dismiss with undo | Long list, `+2 more` cap | Collapsed |
+|---|---|---|
+| ![Dismiss toast with undo](screenshots/sidebar-toast.png) | ![Row cap with plus-two-more](screenshots/sidebar-more.png) | ![Collapsed to one header row](screenshots/sidebar-collapsed.png) |
 
 ## The idea
 

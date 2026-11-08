@@ -1,6 +1,10 @@
 [
+  "screenshots/demo.gif",
   "screenshots/sidebar-in-place.png",
   "screenshots/sidebar-attention.png",
   "screenshots/sidebar-working.png",
-  "screenshots/sidebar-finished.png"
+  "screenshots/sidebar-finished.png",
+  "screenshots/sidebar-toast.png",
+  "screenshots/sidebar-more.png",
+  "screenshots/sidebar-collapsed.png"
 ]

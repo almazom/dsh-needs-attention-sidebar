@@ -14,9 +14,15 @@
 
 零核心改动：一切皆插件 —— 一个服务端扫描路由加一小段锚定到现有侧边栏 DOM 的客户端脚本。
 
+![演示：标签页切换、忽略并撤销、折叠](screenshots/demo.gif)
+
 | 实际位置 | 需关注 | 进行中 | 已完成 |
 |---|---|---|---|
 | ![区块位于 Workspaces 上方](screenshots/sidebar-in-place.png) | ![Attention 标签页](screenshots/sidebar-attention.png) | ![Working 标签页](screenshots/sidebar-working.png) | ![Finished 标签页](screenshots/sidebar-finished.png) |
+
+| 忽略与撤销 | 长列表 `+2 more` 截断 | 折叠态 |
+|---|---|---|
+| ![忽略提示与撤销按钮](screenshots/sidebar-toast.png) | ![行数上限显示加二更多](screenshots/sidebar-more.png) | ![折叠为单行头部](screenshots/sidebar-collapsed.png) |
 
 ## 想法
 
