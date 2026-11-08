@@ -1,10 +1,10 @@
-# @almazom/dsh-needs-attention
+# @almazom/dsh-needs-attention-sidebar
 
 English | [简体中文](README.zh-CN.md)
 
 **A "Needs attention" block for the [DeepSeek Harness (DSH)](https://github.com/volcengine/dsh) web sidebar — live triage of your agent sessions: what is working, what died, what needs your decision.**
 
-![npm](https://img.shields.io/npm/v/@almazom/dsh-needs-attention) ![license](https://img.shields.io/npm/l/@almazom/dsh-needs-attention) ![dsh](https://img.shields.io/badge/dsh-%3E%3D0.2.0--rc.1-blue)
+![npm](https://img.shields.io/npm/v/@almazom/dsh-needs-attention-sidebar) ![license](https://img.shields.io/npm/l/@almazom/dsh-needs-attention-sidebar) ![dsh](https://img.shields.io/badge/dsh-%3E%3D0.2.0--rc.1-blue)
 
 When you run many agent sessions, failures are quiet: a turn dies with a 429 or a fatal API error, and the session just sits there looking "open". This plugin gives those sessions a face. It injects a compact **Focus** block above the *Workspaces* section of the DSH web sidebar, with three tabs:
 
@@ -50,7 +50,7 @@ Three design rules:
 Requires DSH `>=0.2.0-rc.1` (checked at install time via `engines.dsh`).
 
 ```bash
-dsh plugin --profile web add @almazom/dsh-needs-attention
+dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 ```
 
 That's it. The command installs the package into the profile, and because the package declares `dsh.bundle.patch`, DSH auto-registers the plugin's cordis patch. Restart the web lane (or reload the page) and the **Focus** block appears above *Workspaces*.

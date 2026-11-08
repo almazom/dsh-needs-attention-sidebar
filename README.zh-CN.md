@@ -1,10 +1,10 @@
-# @almazom/dsh-needs-attention
+# @almazom/dsh-needs-attention-sidebar
 
 [English](README.md) | 简体中文
 
 **[DeepSeek Harness（DSH）](https://github.com/volcengine/dsh) Web 侧边栏的「需要关注」区块 —— 实时分诊你的智能体会话：哪些在跑、哪些挂了、哪些等你拍板。**
 
-![npm](https://img.shields.io/npm/v/@almazom/dsh-needs-attention) ![license](https://img.shields.io/npm/l/@almazom/dsh-needs-attention) ![dsh](https://img.shields.io/badge/dsh-%3E%3D0.2.0--rc.1-blue)
+![npm](https://img.shields.io/npm/v/@almazom/dsh-needs-attention-sidebar) ![license](https://img.shields.io/npm/l/@almazom/dsh-needs-attention-sidebar) ![dsh](https://img.shields.io/badge/dsh-%3E%3D0.2.0--rc.1-blue)
 
 当你同时运行许多智能体会话时，失败是无声的：某个回合以 429 或致命 API 错误收场，会话却依然「挂在那里」装作还开着。这个插件给这些会话一张脸。它在 DSH Web 侧边栏 *Workspaces（工作区）* 区块上方注入一个紧凑的 **Focus** 区块，包含三个标签页：
 
@@ -50,7 +50,7 @@
 需要 DSH `>=0.2.0-rc.1`（安装时通过 `engines.dsh` 校验）。
 
 ```bash
-dsh plugin --profile web add @almazom/dsh-needs-attention
+dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 ```
 
 就这样。该命令把包装进 profile；因为包声明了 `dsh.bundle.patch`，DSH 会自动注册插件的 cordis 补丁。重启 Web 车道（或刷新页面），**Focus** 区块就出现在 *Workspaces* 上方。

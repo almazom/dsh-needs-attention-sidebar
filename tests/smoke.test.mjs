@@ -8,7 +8,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 test("package.json: bundle patch + web client platform", () => {
   const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-  assert.equal(pkg.name, "@almazom/dsh-needs-attention");
+  assert.equal(pkg.name, "@almazom/dsh-needs-attention-sidebar");
   assert.equal(pkg.dsh.bundle.patch, "./cordis.patch.yml");
   assert.equal(pkg.dsh.client.platform, "web");
   /* the dsh compat gate reads ONLY top-level engines.dsh (plugin-compatibility.js,
@@ -32,7 +32,7 @@ test("client.js: ModuleLoader lazy load + once-guard", () => {
 
 test("index.mjs: inert-safe host entry (name/inject/apply)", async () => {
   const mod = await import(join(root, "index.mjs") + `?t=${Date.now()}`);
-  assert.equal(mod.name, "@almazom/dsh-needs-attention");
+  assert.equal(mod.name, "@almazom/dsh-needs-attention-sidebar");
   /* the route needs `connection` so it can apply the same admission check as the
      GUI: exact-table routes under /api bypass the prefix gate (P0, 2026-10-30) */
   assert.deepEqual(mod.inject, ["webServer", "connection"]);

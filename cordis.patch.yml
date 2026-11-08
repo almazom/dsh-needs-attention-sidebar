@@ -2,4 +2,4 @@
 # loads the browser half (src/client.js) via dsh.client.platform: web.
 - insert:
     - id: needs-attention
-      name: '@almazom/dsh-needs-attention'
+      name: '@almazom/dsh-needs-attention-sidebar'

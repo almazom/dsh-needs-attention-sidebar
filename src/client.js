@@ -1,5 +1,5 @@
 /*
- * @almazom/dsh-needs-attention — client half (lazy ModuleLoader factory,
+ * @almazom/dsh-needs-attention-sidebar — client half (lazy ModuleLoader factory,
  * boot-graph contract per dsh-client-inject-plugin / dsh-message-fullscreen).
  *
  * Zero-core-edit seams:
@@ -31,10 +31,10 @@
  *     core-owned dsh.sessions.current key (same-origin poisoning, security P2).
  */
 if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoader__.load({
-  id: "@almazom/dsh-needs-attention",
+  id: "@almazom/dsh-needs-attention-sidebar",
   factory: function () {
     "use strict";
-    if (window.__DSH_NA__) return { name: "@almazom/dsh-needs-attention", apply: function () {} };
+    if (window.__DSH_NA__) return { name: "@almazom/dsh-needs-attention-sidebar", apply: function () {} };
     window.__DSH_NA__ = true;
 
     /** Mount-aware route (measured): the panel may serve under a path prefix
@@ -661,7 +661,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     observer.observe(document.body, { childList: true, subtree: true });
 
     return {
-      name: "@almazom/dsh-needs-attention",
+      name: "@almazom/dsh-needs-attention-sidebar",
       apply: function () {},
       dispose: function () {
         try { observer.disconnect(); } catch (e) {}
