@@ -94,7 +94,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         grpFailed: "Failed", grpLook: "Look", grpWait: "Waiting",
         dismissed: "dismissed — ", undo: "Undo",
         eyeHide: "Hide session list", eyeShow: "Show session list",
-        navFold: "Collapse navigation", navUnfold: "Expand navigation",
+        navFold: "Collapse navigation",
         openFailId: "cannot open this session id", openFail: "cannot open this session",
         opening: "opening ", tail: "…",
         lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
@@ -112,7 +112,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         grpFailed: "失败", grpLook: "需查看", grpWait: "等待",
         dismissed: "已忽略 — ", undo: "撤销",
         eyeHide: "隐藏会话列表", eyeShow: "显示会话列表",
-        navFold: "折叠导航", navUnfold: "展开导航",
+        navFold: "折叠导航",
         openFailId: "无法打开该会话 ID", openFail: "无法打开此会话",
         opening: "正在打开 ", tail: "…",
         lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
@@ -189,7 +189,6 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
   ".dna-foldchev:hover { opacity:1; }",
   ".dna-foldchev svg { transition: transform .15s ease; }",
   ".dna-foldchev[data-dna-folded='1'] svg { transform: rotate(-90deg); }",
-  ".dna-foldchev[data-dna-foldstub] { margin: 2px auto 0; opacity: .55; }",
   "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } .dna-foldchev svg { transition: none; } }",
       /* TC-003 unseen-completion: seen done rows dim, unseen stay bright + '!' badge */
       ".dna-arow.dna-dim { opacity: .55; }",
@@ -345,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states22-foldall";
+    var DNA_BUILD = "states23-moreoff";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -436,7 +435,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
        localStorage and RE-APPLY on every render because the host re-renders React
        subtrees and would drop injected attributes/nodes otherwise. */
     var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
-    var LS_MORE_FOLDED = "dsh-needs-attention.moreCollapsed";
+    var moreHidden = false; /* per-page only: reload restores the More row (operator 2026-11-09: no extra buttons, no persistence) */
     var MORE_TOKENS = ["More", "更多"]; /* detection is bilingual — zh hosts localize the nav row */
     function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
     function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
@@ -494,11 +493,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         if (MORE_TOKENS.indexOf(al) !== -1 || MORE_TOKENS.indexOf(t) !== -1) { moreRow = rows[i]; break; }
       }
       if (!moreRow) {
-        /* review P1: if the More row vanished (host rename/localization) while folded,
+        /* review P1: if the More row vanished (host rename/localization) while hidden,
            restore everything — never leave the nav hidden without its restore control */
-        var stub0 = nav.querySelector("[data-dna-foldstub]");
-        if (stub0 && stub0.style.display !== "none") stub0.style.display = "none";
-        for (i = 0; i < rows.length; i++) { if (rows[i].hasAttribute("data-dna-foldstub")) continue; if (rows[i].style.display === "none") rows[i].style.display = ""; }
+        moreHidden = false;
+        for (i = 0; i < rows.length; i++) { if (rows[i].style.display === "none") rows[i].style.display = ""; }
         var ns0 = document.querySelector('button[class*="_newSession"]');
         if (ns0 && ns0.style.display === "none") ns0.style.display = "";
         return;
@@ -511,58 +509,26 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         chev.setAttribute("role", "button");
         chev.setAttribute("tabindex", "0");
         chev.innerHTML = FOLD_CHEV16;
+        chev.__dnaIco = FOLD_CHEV16;
         chev.addEventListener("click", function (ev) {
           ev.stopPropagation(); ev.preventDefault();
-          lsMark(LS_MORE_FOLDED, !lsOn(LS_MORE_FOLDED));
+          moreHidden = true; /* operator 2026-11-09: More simply disappears — no stub, no persistence; reload restores */
           navFoldApply();
         });
         chev.addEventListener("keydown", function (ev) {
           if (ev.key !== "Enter" && ev.key !== " ") return;
           ev.stopPropagation(); ev.preventDefault();
-          lsMark(LS_MORE_FOLDED, !lsOn(LS_MORE_FOLDED));
+          moreHidden = true;
           navFoldApply();
         });
         moreRow.appendChild(chev);
       }
-      var folded = lsOn(LS_MORE_FOLDED);
-      /* operator override 2026-11-09: folded state keeps NO nav row — a compact stub restores the stack */
-      var stub = nav.querySelector("[data-dna-foldstub]");
-      if (!stub) {
-        stub = document.createElement("span"); /* span: the stub lives inside the nav list, never inside a host button */
-        stub.className = "dna-foldchev";
-        stub.setAttribute("data-dna-foldstub", "1");
-        stub.setAttribute("role", "button");
-        stub.setAttribute("tabindex", "0");
-        stub.innerHTML = FOLD_CHEV16;
-        stub.__dnaIco = FOLD_CHEV16;
-        stub.addEventListener("click", function (ev) {
-          ev.stopPropagation(); ev.preventDefault();
-          lsMark(LS_MORE_FOLDED, false);
-          navFoldApply();
-        });
-        stub.addEventListener("keydown", function (ev) {
-          if (ev.key !== "Enter" && ev.key !== " ") return;
-          ev.stopPropagation(); ev.preventDefault();
-          lsMark(LS_MORE_FOLDED, false);
-          navFoldApply();
-        });
-        nav.appendChild(stub);
-      }
-      var ft = folded ? T.navUnfold : T.navFold;
+      /* operator 2026-11-09 (final): ONLY the More row hides — Plugins/Duty and New Session stay */
+      var rowWant = moreHidden ? "none" : "";
+      if (moreRow.style.display !== rowWant) moreRow.style.display = rowWant;
+      var ft = T.navFold;
       if (chev.__dnaIco !== FOLD_CHEV16) { chev.innerHTML = FOLD_CHEV16; chev.__dnaIco = FOLD_CHEV16; }
       if (chev.title !== ft) { chev.title = ft; chev.setAttribute("aria-label", ft); }
-      var fx = folded ? "false" : "true";
-      if (chev.getAttribute("aria-expanded") !== fx) chev.setAttribute("aria-expanded", fx);
-      var fd = folded ? "1" : "0";
-      if (chev.getAttribute("data-dna-folded") !== fd) chev.setAttribute("data-dna-folded", fd);
-      var stubWant = folded ? "" : "none";
-      if (stub.style.display !== stubWant) stub.style.display = stubWant;
-      if (stub.getAttribute("data-dna-folded") !== fd) stub.setAttribute("data-dna-folded", fd);
-      if (stub.title !== T.navUnfold) { stub.title = T.navUnfold; stub.setAttribute("aria-label", T.navUnfold); }
-      /* operator override 2026-11-09: fold hides EVERY nav row incl. the More row itself — restore via the small stub below */
-      for (i = 0; i < rows.length; i++) { if (rows[i].hasAttribute("data-dna-foldstub")) continue; var want = folded ? "none" : ""; if (rows[i].style.display !== want) rows[i].style.display = want; }
-      var ns = document.querySelector('button[class*="_newSession"]');
-      if (ns && ns.style.display !== (folded ? "none" : "")) ns.style.display = folded ? "none" : "";
     }
     function focusFeatures(anchor) {
       try { if (anchor && anchor.el) sessionEyeApply(anchor.el); } catch (e) {}

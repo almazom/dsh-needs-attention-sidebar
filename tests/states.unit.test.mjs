@@ -107,7 +107,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /var DNA_BUILD = "states22-foldall"/); /* states22-foldall = operator override: fold hides the More row too */
+  assert.match(clientSrc, /var DNA_BUILD = "states23-moreoff"/); /* states23-moreoff = operator final: only the More row hides, no stub */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -222,13 +222,12 @@ test("TC-005 AC4: dismiss first-click — source pins (in-place removal, batched
 });
 
 test("TC-010/011: focus features — eye + nav fold source pins", () => {
-  assert.match(clientSrc, /var DNA_BUILD = "states22-foldall"/);
+  assert.match(clientSrc, /var DNA_BUILD = "states23-moreoff"/);
   assert.match(clientSrc, /var LS_SESSIONS_HIDDEN = "dsh-needs-attention\.sessionsHidden"/);
-  assert.match(clientSrc, /var LS_MORE_FOLDED = "dsh-needs-attention\.moreCollapsed"/);
+  assert.match(clientSrc, /var moreHidden = false/); /* per-page flag: reload restores the More row */
   assert.match(clientSrc, /data-dna-eye/); /* eye injected into host headerActions */
   assert.match(clientSrc, /data-dna-foldchev/); /* chevron span inside host More row */
-  assert.match(clientSrc, /data-dna-foldstub/); /* operator override: folded nav keeps only the restore stub */
-  assert.match(clientSrc, /fold hides EVERY nav row incl\. the More row/);
+  assert.match(clientSrc, /ONLY the More row hides/); /* operator final: Plugins/Duty and New Session stay */
   assert.match(clientSrc, /eyeHide: "Hide session list", eyeShow: "Show session list"/);
   assert.match(clientSrc, /eyeHide: "隐藏会话列表", eyeShow: "显示会话列表"/);
   /* F1 label cue tolerated by anchor match: base = text minus " · N" suffix */
