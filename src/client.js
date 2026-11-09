@@ -327,7 +327,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states19-rail";
+    var DNA_BUILD = "states20-toast";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -561,9 +561,11 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
            the next click (mousedown→mouseup across a replaced node) and resets :hover,
            so the × went invisible mid-click. Rapid dismissals now always land. */
         var rowEl = x.closest(".dna-arow");
+        var ttlEl = rowEl && rowEl.querySelector(".dna-ttl");
+        var ttl = ttlEl ? (ttlEl.textContent || "").trim() : "";
         if (rowEl) rowEl.remove();
         scheduleRender(); /* counts/totals catch up in one batch, not per click */
-        toast(T.dismissed + id8(String(key).split("@")[0]), true);
+        toast(T.dismissed + (ttl ? ttl.slice(0, 40) : id8(String(key).split("@")[0])), true);
         return;
       }
       var tabBtn = ev.target.closest("[data-dna-tab]");
