@@ -107,7 +107,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /var DNA_BUILD = "states29-rail"/); /* states29-rail = rail-mode cleanup via host *_rail classes */
+  assert.match(clientSrc, /var DNA_BUILD = "states30-classic"/); /* states30-classic = rail-mode cleanup via host *_rail classes */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -122,7 +122,8 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /var I18N = \{/);
   assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(base\) \? "zh" : "en"\)/); /* TC-010: base (cue-suffix-stripped) */
   assert.match(clientSrc, /slice\(0, 40\)/, "toast title pinned");
-  assert.match(clientSrc, /dna-spin 1\.2s linear infinite/, "spin pinned");
+  assert.match(clientSrc, /dna-pulse 2s ease-in-out infinite/, "working marker: gentle opacity pulse (demo.gif design)");
+  assert.ok(!clientSrc.includes("opacity:.35"), "dismiss x hidden until hover (demo.gif design)");
   assert.match(clientSrc, /prefers-reduced-motion[^}]*animation:\s*none/, "reduced-motion kills animation");
   assert.match(clientSrc, /data-dna-zh/);
   assert.match(clientSrc, /var warnLen = aliveErr\.length \+ byState\.look\.length \+ byState\.waiting\.length/); /* TC-014: Attention tab counts warnings only */
@@ -222,7 +223,7 @@ test("TC-005 AC4: dismiss first-click — source pins (in-place removal, batched
 });
 
 test("TC-010/011: focus features — eye + nav fold source pins", () => {
-  assert.match(clientSrc, /var DNA_BUILD = "states29-rail"/);
+  assert.match(clientSrc, /var DNA_BUILD = "states30-classic"/);
   assert.match(clientSrc, /\[class\*=\"_rail\"\] \[data-dna-block\]/); /* rail cleanup: block+eye+chev hidden by host rail classes */
   assert.match(clientSrc, /data-since="' \+ esc\(s\.at\)/); /* security P3-1: the tick attribute goes through esc() like every other interpolation */
   assert.match(clientSrc, /var LS_SESSIONS_HIDDEN = "dsh-needs-attention\.sessionsHidden"/);
