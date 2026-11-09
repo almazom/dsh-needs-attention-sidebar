@@ -436,12 +436,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
        subtrees and would drop injected attributes/nodes otherwise. */
     var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
     var LS_MORE_FOLDED = "dsh-needs-attention.moreCollapsed";
+    var MORE_TOKENS = ["More", "更多"]; /* detection is bilingual — zh hosts localize the nav row */
     function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
     function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
     function sessionEyeApply(header) {
       if (!header || !header.querySelector) return;
       var actions = header.querySelector('[class*="_headerActions"]');
-      var list = header.parentElement && (header.parentElement.querySelector('[class*="_listArea"]') || header.nextElementSibling);
+      var list = header.parentElement && header.parentElement.querySelector('[class*="_listArea"]');
+      if (!list && header.nextElementSibling && header.nextElementSibling.querySelector('[class*="_sessionRow"],[class*="_projectRow"]')) list = header.nextElementSibling;
       var label = header.querySelector('[class*="_sectionLabel"]');
       if (!actions || !list || !label) return;
       var eye = actions.querySelector("[data-dna-eye]");
@@ -459,15 +461,20 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         actions.appendChild(eye);
       }
       var hidden = lsOn(LS_SESSIONS_HIDDEN);
-      if (!label.getAttribute("data-dna-base")) label.setAttribute("data-dna-base", (label.textContent || "").trim());
-      var baseTxt = label.getAttribute("data-dna-base");
+      var baseTxt = (label.textContent || "").trim().replace(/\s*·\s*\d+\s*$/, ""); /* derived per apply — never stale on host renames */
       var n = list.querySelectorAll('[class*="_sessionRow"],[class*="_projectRow"]').length;
-      eye.setAttribute("aria-expanded", hidden ? "false" : "true");
-      eye.title = hidden ? T.eyeShow : T.eyeHide;
-      eye.setAttribute("aria-label", eye.title);
-      eye.innerHTML = hidden ? EYE_OFF16 : EYE_OPEN16;
-      list.style.display = hidden ? "none" : "";
-      label.textContent = hidden ? baseTxt + " · " + n : baseTxt;
+      var t = hidden ? T.eyeShow : T.eyeHide;
+      var ico = hidden ? EYE_OFF16 : EYE_OPEN16;
+      /* write-guard: identical writes still mutate childList/attrs and would re-trigger
+         our own MutationObserver → self-sustaining render loop (review P2-1) */
+      if (eye.__dnaIco !== ico) { eye.innerHTML = ico; eye.__dnaIco = ico; }
+      if (eye.title !== t) { eye.title = t; eye.setAttribute("aria-label", t); }
+      var ax = hidden ? "false" : "true";
+      if (eye.getAttribute("aria-expanded") !== ax) eye.setAttribute("aria-expanded", ax);
+      var disp = hidden ? "none" : "";
+      if (list.style.display !== disp) list.style.display = disp;
+      var nxt = hidden ? baseTxt + " · " + n : baseTxt;
+      if (label.textContent !== nxt) label.textContent = nxt;
     }
     function navFoldApply() {
       var nav = document.querySelector('[class*="_panelList"]');
@@ -476,9 +483,17 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var moreRow = null, i;
       for (i = 0; i < rows.length; i++) {
         var t = (rows[i].textContent || "").trim();
-        if (rows[i].getAttribute("aria-label") === "More" || t === "More") { moreRow = rows[i]; break; }
+        var al = rows[i].getAttribute("aria-label");
+        if (MORE_TOKENS.indexOf(al) !== -1 || MORE_TOKENS.indexOf(t) !== -1) { moreRow = rows[i]; break; }
       }
-      if (!moreRow) return;
+      if (!moreRow) {
+        /* review P1: if the More row vanished (host rename/localization) while folded,
+           restore everything — never leave the nav hidden without its restore control */
+        for (i = 0; i < rows.length; i++) { if (rows[i].style.display === "none") rows[i].style.display = ""; }
+        var ns0 = document.querySelector('button[class*="_newSession"]');
+        if (ns0 && ns0.style.display === "none") ns0.style.display = "";
+        return;
+      }
       var chev = moreRow.querySelector("[data-dna-foldchev]");
       if (!chev) {
         chev = document.createElement("span"); /* span, not button: the row itself is a <button> */
@@ -501,14 +516,16 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         moreRow.appendChild(chev);
       }
       var folded = lsOn(LS_MORE_FOLDED);
-      chev.setAttribute("data-dna-folded", folded ? "1" : "0");
-      chev.title = folded ? T.navUnfold : T.navFold;
-      chev.setAttribute("aria-label", chev.title);
-      chev.setAttribute("aria-expanded", folded ? "false" : "true");
-      var all = nav.querySelectorAll("button");
-      for (i = 0; i < all.length; i++) { if (all[i] !== moreRow) all[i].style.display = folded ? "none" : ""; }
+      var ft = folded ? T.navUnfold : T.navFold;
+      if (chev.__dnaIco !== FOLD_CHEV16) { chev.innerHTML = FOLD_CHEV16; chev.__dnaIco = FOLD_CHEV16; }
+      if (chev.title !== ft) { chev.title = ft; chev.setAttribute("aria-label", ft); }
+      var fx = folded ? "false" : "true";
+      if (chev.getAttribute("aria-expanded") !== fx) chev.setAttribute("aria-expanded", fx);
+      var fd = folded ? "1" : "0";
+      if (chev.getAttribute("data-dna-folded") !== fd) chev.setAttribute("data-dna-folded", fd);
+      for (i = 0; i < rows.length; i++) { var want = (rows[i] !== moreRow && folded) ? "none" : ""; if (rows[i].style.display !== want) rows[i].style.display = want; }
       var ns = document.querySelector('button[class*="_newSession"]');
-      if (ns) ns.style.display = folded ? "none" : "";
+      if (ns && ns.style.display !== (folded ? "none" : "")) ns.style.display = folded ? "none" : "";
     }
     function focusFeatures(anchor) {
       try { if (anchor && anchor.el) sessionEyeApply(anchor.el); } catch (e) {}

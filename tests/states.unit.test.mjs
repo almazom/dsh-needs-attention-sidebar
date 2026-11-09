@@ -233,6 +233,10 @@ test("TC-010/011: focus features — eye + nav fold source pins", () => {
   assert.match(clientSrc, /text\.replace\(\/\\s\*·\\s\*\\d\+\\s\*\$\/, ""\)/);
   /* host-exact icon tokens (live-measured: 16px box, stroke-width 1) */
   assert.match(clientSrc, /EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"/);
+  /* review round: bilingual More detection + write-guards + no-nav-loss restore pass */
+  assert.match(clientSrc, /var MORE_TOKENS = \["More", "更多"\]/);
+  assert.match(clientSrc, /__dnaIco/); /* identical writes guarded — MutationObserver loop */
+  assert.match(clientSrc, /never leave the nav hidden without its restore control/);
   /* fold chevron ≤150ms transition, killed under reduced motion */
   assert.match(clientSrc, /\.dna-foldchev svg \{ transition: transform \.15s ease; \}/);
   assert.match(clientSrc, /reduced-motion: reduce[^@]*dna-foldchev svg \{ transition: none; \} \}/); /* crosses inner {} blocks */
