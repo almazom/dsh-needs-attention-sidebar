@@ -186,7 +186,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-block[data-dna-zh] .dna-tab { font-size:13px; }",
       ".dna-block[data-dna-zh] .dna-div { font-size:12px; }",
       /* TC-004 rail degrade: <1200px the host sidebar is a 35px rail — badge-only head */
-      "@media (max-width: 1199.98px) { .dna-block .dna-label, .dna-block .dna-hspace, .dna-block .dna-chev { display:none; } .dna-block .dna-head { justify-content:center; gap:6px; } }",
+      "/* viewport MQ removed 2026-11-09: badge-only head fired on ~1270px windows (zoom) and hid the Focus label — rail handled by [_rail] rule */",
     ].join("\n");
     var style = document.createElement("style");
     style.setAttribute("data-plugin-css", "dsh-needs-attention");
@@ -330,7 +330,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states23-classic";
+    var DNA_BUILD = "states24-wide";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
