@@ -175,6 +175,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       "@keyframes dna-spin { to { transform: rotate(360deg); } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
   "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } }",
+  /* Rail-mode cleanup (operator report 2026-11-09): when the host collapses the sidebar
+     to the icon rail it marks our section root with *_rail / *_railIn classes — our block,
+     injected eye and fold chevron would otherwise leak as clipped fragments into the rail. */
+  '[class*="_rail"] [data-dna-block], [class*="_rail"] [data-dna-eye], [class*="_rail"] [data-dna-foldchev] { display: none !important; }',
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
         + " background: var(--dna-ok); color: var(--dsh-color-bg-base,#1b1b1c); font-size:10px; line-height:14px; text-align:center; font-weight:600; }",
       /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
@@ -326,7 +330,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states21-bright";
+    var DNA_BUILD = "states22-rail";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
