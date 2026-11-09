@@ -142,7 +142,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-arow.dna-lv-amber .dna-slot, .dna-arow.dna-lv-amber .dna-t { color: var(--dna-warn-text); }",
       ".dna-ttl { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:20px; }",
       ".dna-t { font-size:10px; line-height:16px; flex:none; margin-left:6px; }",
-      ".dna-x { flex:none; border:0; background:transparent; color: var(--dna-ink2); cursor:pointer; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; padding:0; margin:0 -2px 0 0; opacity:.35; }",
+      ".dna-x { flex:none; border:0; background:transparent; color: var(--dna-ink2); cursor:pointer; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; padding:0; margin:0 -2px 0 0; opacity:0; }",
       ".dna-arow:hover .dna-x, .dna-x:focus-visible { opacity:1; }",
       ".dna-x:hover { color: var(--dna-err); }",
       ".dna-x svg { pointer-events: none; }",
@@ -169,12 +169,12 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-arow.dna-lv-mute .dna-slot, .dna-arow.dna-lv-mute .dna-t { color: var(--dna-mute); }",
       /* TC-002 liveness groups: Working = sky spin (arc loader), Waiting = amber Shield */
       ".dna-arow.dna-lv-work .dna-slot, .dna-arow.dna-lv-work .dna-tick { color: #4da3ff; }",
-      ".dna-arow.dna-lv-work .dna-slot svg { animation: dna-spin 1.2s linear infinite; transform-origin: 50% 50%; }",
+      ".dna-arow.dna-lv-work .dna-slot { animation: dna-pulse 2s ease-in-out infinite; }",
       ".dna-arow.dna-lv-wait .dna-slot, .dna-arow.dna-lv-wait .dna-t { color: var(--dna-warn-text); }",
       ".dna-tick { font-variant-numeric: tabular-nums; }",
-      "@keyframes dna-spin { to { transform: rotate(360deg); } }",
+      "@keyframes dna-pulse { 0%,100% { opacity:1; } 50% { opacity:.45; } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
-  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } }",
+  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot { animation: none; } }",
   /* Rail-mode cleanup (operator report 2026-11-09): when the host collapses the sidebar
      to the icon rail it marks our section root with *_rail / *_railIn classes — our block,
      injected eye and fold chevron would otherwise leak as clipped fragments into the rail. */
@@ -330,7 +330,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states22-rail";
+    var DNA_BUILD = "states23-classic";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
