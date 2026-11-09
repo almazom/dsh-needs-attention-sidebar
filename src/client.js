@@ -344,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states23-moreoff";
+    var DNA_BUILD = "states24-dutykeep";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -436,7 +436,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
        subtrees and would drop injected attributes/nodes otherwise. */
     var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
     var moreHidden = false; /* per-page only: reload restores the More row (operator 2026-11-09: no extra buttons, no persistence) */
-    var MORE_TOKENS = ["More", "更多"]; /* detection is bilingual — zh hosts localize the nav row */
+    var MORE_TOKENS = ["More", "更多"];
+    var DUTY_TOKENS = ["Duty", "Дежурный"]; /* operator 2026-11-09: the Duty row survives the hide */ /* detection is bilingual — zh hosts localize the nav row */
     function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
     function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
     function sessionEyeApply(header) {
@@ -512,7 +513,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         chev.__dnaIco = FOLD_CHEV16;
         chev.addEventListener("click", function (ev) {
           ev.stopPropagation(); ev.preventDefault();
-          moreHidden = true; /* operator 2026-11-09: More simply disappears — no stub, no persistence; reload restores */
+          moreHidden = true; /* operator 2026-11-09: nav hides except Duty — no stub, no persistence; reload restores */
           navFoldApply();
         });
         chev.addEventListener("keydown", function (ev) {
@@ -523,9 +524,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         });
         moreRow.appendChild(chev);
       }
-      /* operator 2026-11-09 (final): ONLY the More row hides — Plugins/Duty and New Session stay */
-      var rowWant = moreHidden ? "none" : "";
-      if (moreRow.style.display !== rowWant) moreRow.style.display = rowWant;
+      /* operator 2026-11-09: hide More + Plugins + Automation tasks, keep Duty; New Session stays */
+      for (i = 0; i < rows.length; i++) {
+        var t2 = (rows[i].textContent || "").trim();
+        var al2 = rows[i].getAttribute("aria-label");
+        var isDuty = DUTY_TOKENS.indexOf(t2) !== -1 || DUTY_TOKENS.indexOf(al2) !== -1;
+        var want = (moreHidden && !isDuty) ? "none" : "";
+        if (rows[i].style.display !== want) rows[i].style.display = want;
+      }
       var ft = T.navFold;
       if (chev.__dnaIco !== FOLD_CHEV16) { chev.innerHTML = FOLD_CHEV16; chev.__dnaIco = FOLD_CHEV16; }
       if (chev.title !== ft) { chev.title = ft; chev.setAttribute("aria-label", ft); }
