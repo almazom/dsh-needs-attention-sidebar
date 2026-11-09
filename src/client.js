@@ -66,17 +66,55 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     var UNDO_ICON = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 7.2h6.1a3.4 3.4 0 1 1 0 6.8H7.4"/><path d="M6.7 4.5 4.1 7.2l2.6 2.6"/></svg>';
     var CHEV_ICON = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.4 8 9.4l3-3"/></svg>';
     var LVL = {
-      fatal: { cls: "dna-lv-red", icon: ERR_ICON, word: "Error · session stopped" },
-      limit: { cls: "dna-lv-amber", icon: WARN_ICON, word: "Rate limit · 429, still alive" },
+      fatal: { cls: "dna-lv-red", icon: ERR_ICON, word: "lvlFatal" },
+      limit: { cls: "dna-lv-amber", icon: WARN_ICON, word: "lvlLimit" },
     };
     var STATE_LVL = {
-      working: { cls: "dna-lv-work", icon: WORK_ICON, word: "Working" },
-      waiting: { cls: "dna-lv-wait", icon: SHIELD_ICON, word: "Waiting for approval" },
-      look: { cls: "dna-lv-amber", icon: WARN_ICON, word: "Look · needs your attention" },
-      stopped: { cls: "dna-lv-mute", icon: MUTE_ICON, word: "Stopped by you" },
-      ok: { cls: "dna-lv-ok", icon: OK_ICON, word: "Done" },
+      working: { cls: "dna-lv-work", icon: WORK_ICON, word: "stWorking" },
+      waiting: { cls: "dna-lv-wait", icon: SHIELD_ICON, word: "stWaiting" },
+      look: { cls: "dna-lv-amber", icon: WARN_ICON, word: "stLook" },
+      stopped: { cls: "dna-lv-mute", icon: MUTE_ICON, word: "stStopped" },
+      ok: { cls: "dna-lv-ok", icon: OK_ICON, word: "stOk" },
     };
 
+    /* TC-016 i18n: locale detected from the anchor label text (CJK -> zh). T = active table. */
+    var I18N = {
+      en: {
+        focus: "Focus",
+        headTitle: function (w, n, f) { return "Focus — " + w + " working, " + Math.max(0, n) + " need attention" + (f ? ", " + f + " finished" : ""); },
+        tabWork: "Working", tabLook: "Attention", tabDone: "Finished",
+        newSuffix: function (n) { return " · " + n + " new"; },
+        unseenDiv: "since your last visit",
+        more: function (n) { return "+" + n + " more"; },
+        less: "show less",
+        grpFailed: "Failed", grpLook: "Look", grpWait: "Waiting",
+        dismissed: "dismissed — ", undo: "Undo",
+        openFailId: "cannot open this session id", openFail: "cannot open this session",
+        opening: "opening ", tail: "…",
+        lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
+        stWorking: "Working", stWaiting: "Waiting for approval", stLook: "Look · needs your attention", stStopped: "Stopped by you", stOk: "Done",
+        stale: " · stale", win: function (h) { return " · last " + h + "h"; }, unread: function (n) { return " · " + n + " unreadable log(s)"; },
+      },
+      zh: {
+        focus: "焦点",
+        headTitle: function (w, n, f) { return "焦点 — 运行中 " + w + " · 需关注 " + Math.max(0, n) + (f ? " · 已完成 " + f : ""); },
+        tabWork: "运行中", tabLook: "关注", tabDone: "已完成",
+        newSuffix: function (n) { return " · " + n + " 条新"; },
+        unseenDiv: "自上次访问以来",
+        more: function (n) { return "还有 " + n + " 条"; },
+        less: "收起",
+        grpFailed: "失败", grpLook: "查看", grpWait: "等待",
+        dismissed: "已忽略 — ", undo: "撤销",
+        openFailId: "无法打开该会话 ID", openFail: "无法打开此会话",
+        opening: "正在打开 ", tail: "…",
+        lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
+        stWorking: "运行中", stWaiting: "等待批准", stLook: "需要你查看", stStopped: "已被你停止", stOk: "已完成",
+        stale: " · 无响应", win: function (h) { return " · 最近 " + h + " 小时"; }, unread: function (n) { return " · " + n + " 个日志不可读"; },
+      },
+    };
+    var LOCALE = "en";
+    var T = I18N.en;
+    function setLocale(l) { if (I18N[l]) { LOCALE = l; T = I18N[l]; } }
     var CSS = [
       "body { --dna-bg:#ffffff; --dna-ink:#1b1b1c; --dna-ink2:#61666b; --dna-hover:rgba(0,0,0,.05); --dna-err:#ec1313; --dna-warn:#dd8629; --dna-warn-text:#8a5300; --dna-badge-bg:#c02a2a; --dna-ok:#2e8f62; --dna-mute:#61666b; }",
       "body[data-ds-dark-theme] { --dna-bg:#1b1b1c; --dna-ink:#f9fafb; --dna-ink2:#adb2b8; --dna-hover:rgba(255,255,255,.08); --dna-err:#f25a5a; --dna-warn:#f59e0b; --dna-warn-text:#f59e0b; --dna-badge-bg:#c02a2a; --dna-ok:#57b183; --dna-mute:#adb2b8; }",
@@ -140,6 +178,9 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-arow.dna-dim { opacity: .55; }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
         + " background: var(--dna-ok); color: var(--dsh-color-bg-base,#1b1b1c); font-size:10px; line-height:14px; text-align:center; font-weight:600; }",
+      /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
+      ".dna-block[data-dna-zh] .dna-sub { text-transform:none; letter-spacing:0; font-size:12px; }",
+      ".dna-block[data-dna-zh] .dna-tab { font-size:13px; }",
     ].join("\n");
     var style = document.createElement("style");
     style.setAttribute("data-plugin-css", "dsh-needs-attention");
@@ -227,14 +268,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function id8(id) { return String(id).replace(/^session-/, "").slice(0, 8); }
     function rowTip(r) {
       var lv = LVL[r.severity] || LVL.fatal;
-      return lv.word + "\n" + (r.lastError || "") + "\nerror at " + fmtAbs(r.at) + " · checked " + fmtAbs(lastFetchAt) + " · session " + id8(r.id);
+      return T[lv.word] + "\n" + (r.lastError || "") + "\nerror at " + fmtAbs(r.at) + " · checked " + fmtAbs(lastFetchAt) + " · session " + id8(r.id);
     }
 
     function rowHtml(r, hidden) {
       var lv = LVL[r.severity] || LVL.fatal;
       var tip = rowTip(r);
       return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(r.id) + '" data-dna-key="' + esc(dismissKey(r)) + '"'
-        + ' role="button" tabindex="0" aria-label="' + esc((r.title || id8(r.id)) + " — " + (r.lastError || lv.word)) + '"'
+        + ' role="button" tabindex="0" aria-label="' + esc((r.title || id8(r.id)) + " — " + (r.lastError || T[lv.word])) + '"'
         + ' title="' + esc(tip) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
         + '<span class="dna-ttl">' + esc(r.title || r.id) + '</span>'
@@ -264,7 +305,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         var text = (labels[i].textContent || "").trim();
         var header = labels[i].closest('[class*="_sectionHeader"]') || labels[i].parentElement;
         if (!header) continue;
-        if (SECTION_LABELS.indexOf(text) !== -1) return { el: header, how: "label:" + text };
+        if (SECTION_LABELS.indexOf(text) !== -1) { setLocale(/[一-鿿]/.test(text) ? "zh" : "en"); return { el: header, how: "label:" + text }; }
         if (!labelled && text) labelled = { el: header, how: "sectionLabel:" + text };
       }
       if (labelled) return labelled;
@@ -283,7 +324,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states15";
+    var DNA_BUILD = "states16-i18n";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -297,7 +338,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function stateLvl(s) { return STATE_LVL[s.state] || STATE_LVL.ok; }
     function stateTip(s) {
       var lv = stateLvl(s);
-      return lv.word + "\n" + s.kind + (s.cause ? ":" + s.cause : "") + "\nat " + fmtAbs(s.at) + " · checked " + fmtAbs(lastFetchAt) + " · session " + id8(s.id);
+      return T[lv.word] + "\n" + s.kind + (s.cause ? ":" + s.cause : "") + "\nat " + fmtAbs(s.at) + " · checked " + fmtAbs(lastFetchAt) + " · session " + id8(s.id);
     }
     function stateRowHtml(s, hidden) {
       var lv = stateLvl(s);
@@ -305,7 +346,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var dim = s.state === "ok" && !isUnseen(s);
       var dot = s.state === "ok" && isUnseen(s) ? '<span class="dna-new">!</span>' : '';
       return '<div class="dna-arow ' + lv.cls + (dim ? " dna-dim" : "") + '" data-dna-id="' + esc(s.id) + '" data-dna-key="' + esc(dismissKey(s)) + '"'
-        + ' role="button" tabindex="0" aria-label="' + esc((s.title || id8(s.id)) + " — " + lv.word) + '"'
+        + ' role="button" tabindex="0" aria-label="' + esc((s.title || id8(s.id)) + " — " + T[lv.word]) + '"'
         + ' title="' + esc(stateTip(s)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
         + '<span class="dna-ttl">' + esc(s.title || s.id) + '</span>' + dot
@@ -330,8 +371,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
          row (Nielsen H2). Still no dismiss × — an alive session leaves its group alone. */
       return '<div class="dna-arow ' + lv.cls + '" data-dna-live="' + esc(s.id) + '" data-dna-id="' + esc(s.id) + '"'
         + ' role="button" tabindex="0"'
-        + ' aria-label="' + esc((s.title || id8(s.id)) + " — " + lv.word + " — open session") + '"'
-        + ' title="' + esc(lv.word + "\nat " + fmtAbs(s.at)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
+        + ' aria-label="' + esc((s.title || id8(s.id)) + " — " + T[lv.word] + " — open session") + '"'
+        + ' title="' + esc(T[lv.word] + "\nat " + fmtAbs(s.at)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
         + '<span class="dna-ttl">' + esc(s.title || s.id) + '</span>'
         + right + '</div>';
@@ -407,21 +448,20 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var badgeCls = "dna-badge" + (red && amb ? " dna-mix" : amb && !red ? " dna-amb" : "");
       var collapsed = false;
       try { collapsed = localStorage.getItem(LS_COLLAPSED) === "1"; } catch (e) {}
-      var headTitle = "Focus — " + workCount + " working, " + Math.max(0, needCount) + " need attention" + (fin.length ? ", " + fin.length + " finished" : "")
-        + " · last " + meta.windowH + "h" + (meta.degraded ? " · " + meta.degraded + " unreadable log(s)" : "");
+      var headTitle = T.headTitle(workCount, needCount, fin.length) + T.win(meta.windowH) + (meta.degraded ? T.unread(meta.degraded) : "");
       /* flat item list for the ACTIVE tab: {sub} = group caption, {row,isState} = a row */
       var items = [];
       if (sTab === "look") {
         if (aliveErr.length) {
-          items.push({ sub: aliveErr.length === 1 && byState.look.length === 0 ? null : "Failed", n: aliveErr.length, danger: aliveErr.length > 0 });
+          items.push({ sub: aliveErr.length === 1 && byState.look.length === 0 ? null : T.grpFailed, n: aliveErr.length, danger: aliveErr.length > 0 });
           aliveErr.forEach(function (r) { items.push({ row: r, isState: false }); });
         }
         if (byState.look.length) {
-          items.push({ sub: "Look", n: byState.look.length });
+          items.push({ sub: T.grpLook, n: byState.look.length });
           byState.look.forEach(function (s) { items.push({ row: s, isState: true }); });
         }
         if (byState.waiting.length) {
-          items.push({ sub: "Waiting", n: byState.waiting.length });
+          items.push({ sub: T.grpWait, n: byState.waiting.length });
           byState.waiting.forEach(function (s) { items.push({ row: s, isState: true, live: true }); });
         }
       } else if (sTab === "work") { /* TC-014: Working has its own tab — extracted from Attention (operator 2026-11-07, Nielsen H2) */
@@ -439,9 +479,9 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         items.unseenTop = unseenTop;
       }
       var shown = 0;
-      var html = '<div class="dna-block" data-dna-block data-dna-build="' + DNA_BUILD + '">'
+      var html = '<div class="dna-block" data-dna-block data-dna-build="' + DNA_BUILD + '"' + (LOCALE === "zh" ? ' data-dna-zh="1"' : "") + '>' 
         + '<div class="dna-head' + (collapsed ? " dna-collapsed" : "") + '" role="button" tabindex="0" aria-expanded="' + String(!collapsed) + '" title="' + esc(headTitle) + '">'
-        + '<span class="dna-label">Focus</span>'
+        + '<span class="dna-label">' + T.focus + '</span>'
         + (meta.degraded ? '<span class="dna-deg" title="' + esc(meta.degraded + " unreadable log(s)") + '"></span>' : '')
         + '<span class="dna-hspace"></span>'
         + (workCount > 0 ? '<span class="dna-badge dna-b-work">' + workCount + '</span>' : '')
@@ -450,11 +490,11 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         + '<span class="dna-chev">' + CHEV_ICON + '</span></div>'
         + '<div class="dna-group">'
         + '<div class="dna-tabs" role="tablist" aria-label="Focus views">'
-        + (workCount > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="work" aria-selected="' + String(sTab === "work") + '">Working ' + workCount + '</button>' : '')
-        + (warnLen > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="look" aria-selected="' + String(sTab === "look") + '">Attention ' + warnLen + '</button>' : '')
-        + '<button type="button" class="dna-tab dna-tab-fin" role="tab" data-dna-tab="done" aria-selected="' + String(sTab === "done") + '">Finished ' + fin.length + (unseenCount ? " · " + unseenCount + " new" : "") + '</button>'
+        + (workCount > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="work" aria-selected="' + String(sTab === "work") + '">' + T.tabWork + ' ' + workCount + '</button>' : '')
+        + (warnLen > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="look" aria-selected="' + String(sTab === "look") + '">' + T.tabLook + ' ' + warnLen + '</button>' : '')
+        + '<button type="button" class="dna-tab dna-tab-fin" role="tab" data-dna-tab="done" aria-selected="' + String(sTab === "done") + '">' + T.tabDone + ' ' + fin.length + (unseenCount ? T.newSuffix(unseenCount) : "") + '</button>'
         + '</div>';
-      if (items.unseenTop) html += '<div class="dna-div">since your last visit</div>';
+      if (items.unseenTop) html += '<div class="dna-div">' + T.unseenDiv + '</div>';
       for (var i = 0; i < items.length; i++) {
         if (items[i].sub !== undefined && items[i].sub !== null) { html += subHtml(items[i].sub, items[i].n, items[i].danger); continue; }
         if (!items[i].row && !items[i].isState) continue; /* caption-less group marker ({sub:null}: single Failed, pure Working) carries no row — latent v0.2 crash fixed 2026-11-07 */
@@ -464,8 +504,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         shown++;
       }
       var hiddenCount = expanded ? 0 : Math.max(0, shown - VISIBLE_ROWS);
-      if (hiddenCount) html += '<div class="dna-more" data-dna-more role="button" tabindex="0">+' + hiddenCount + " more</div>";
-      else if (expanded && shown > VISIBLE_ROWS) html += '<div class="dna-more" data-dna-more role="button" tabindex="0">show less</div>';
+      if (hiddenCount) html += '<div class="dna-more" data-dna-more role="button" tabindex="0">' + T.more(hiddenCount) + "</div>";
+      else if (expanded && shown > VISIBLE_ROWS) html += '<div class="dna-more" data-dna-more role="button" tabindex="0">' + T.less + '</div>';
       html += "</div></div>";
       if (block) {
         block.replaceWith(parseHTML(html));
@@ -490,10 +530,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       /* P1-B: the target row is often NOT rendered (workspace groups collapse at 5 rows),
          so fall back to the canonical deep-link path — but only for a well-formed id,
          because dsh.sessions.current is core-owned state (security P2). */
-      if (!SESSION_ID_RE.test(String(sid))) { toast("cannot open this session id", false); return; }
+      if (!SESSION_ID_RE.test(String(sid))) { toast(T.openFailId, false); return; }
       try { localStorage.setItem("dsh.sessions.current", JSON.stringify({ sessionId: sid })); }
-      catch (e) { toast("cannot open this session", false); return; }
-      toast("opening " + id8(sid) + "…", false);
+      catch (e) { toast(T.openFail, false); return; }
+      toast(T.opening + id8(sid) + T.tail, false);
       setTimeout(function () { try { location.reload(); } catch (e) {} }, 150);
     }
 
@@ -520,7 +560,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         var rowEl = x.closest(".dna-arow");
         if (rowEl) rowEl.remove();
         scheduleRender(); /* counts/totals catch up in one batch, not per click */
-        toast("dismissed — " + id8(String(key).split("@")[0]), true);
+        toast(T.dismissed + id8(String(key).split("@")[0]), true);
         return;
       }
       var tabBtn = ev.target.closest("[data-dna-tab]");
@@ -559,7 +599,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         t.className = "dna-toast";
         t.setAttribute("data-dna-toast", "");
         t.setAttribute("aria-live", "polite");
-        t.innerHTML = '<span class="dna-toastmsg"></span><button class="dna-undo" type="button">' + UNDO_ICON + "Undo</button>";
+        t.innerHTML = '<span class="dna-toastmsg"></span><button class="dna-undo" type="button">' + UNDO_ICON + T.undo + "</button>";
         document.body.appendChild(t);
         t.querySelector(".dna-undo").addEventListener("click", function () {
           if (lastDismissed) {

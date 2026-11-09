@@ -104,10 +104,10 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /data-dna-tab="look"/);
   assert.match(clientSrc, /data-dna-tab="done"/);
   assert.match(clientSrc, /aria-selected/);
-  assert.match(clientSrc, /since your last visit/);
+  assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /var DNA_BUILD = "states15"/); /* F11: marker bumped with the Working-tab click fix */
+  assert.match(clientSrc, /var DNA_BUILD = "states16-i18n"/); /* F11: marker bumped with the Working-tab click fix; states16-i18n = TC-001 locale table */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -116,12 +116,16 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.ok(gi > -1, "TC-013 fix: caption-less group marker must not fall into rowHtml(undefined)");
   var hi = clientSrc.indexOf('<span class="dna-hspace"></span>', clientSrc.indexOf('dna-head')), bi = clientSrc.indexOf('dna-badge dna-b-work">');
   assert.ok(hi > -1 && bi > -1 && hi < bi, "TC-012: hspace must precede badges — blue/green/red aligned right (operator m03011/m03017)");
-  var fi = clientSrc.indexOf('"Failed", n: aliveErr.length'), li = clientSrc.indexOf('"Look", n: byState.look.length');
+  var fi = clientSrc.indexOf('T.grpFailed, n: aliveErr.length'), li = clientSrc.indexOf('T.grpLook, n: byState.look.length');
   assert.ok(fi > -1 && li > -1 && fi < li, "TC-011: Failed group must render ABOVE Look (operator m02960, TC-014 Attention = warnings only)");
+  /* TC-001 i18n: locale table + zh detection + data-dna-zh hook */
+  assert.match(clientSrc, /var I18N = \{/);
+  assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(text\) \? "zh" : "en"\)/);
+  assert.match(clientSrc, /data-dna-zh/);
   assert.match(clientSrc, /var warnLen = aliveErr\.length \+ byState\.look\.length \+ byState\.waiting\.length/); /* TC-014: Attention tab counts warnings only */
   assert.match(clientSrc, /sTab === "work"/); /* TC-014: Working has its own items branch */
   assert.match(clientSrc, /data-dna-tab="work"/); /* TC-014: Working tab button */
-  assert.match(clientSrc, /Working ' \+ workCount/); /* TC-014: tab label "Working N" */
+  assert.match(clientSrc, /T\.tabWork \+ ' ' \+ workCount/); /* TC-014: tab label "Working N" */
   assert.match(clientSrc, /warnLen > 0 \? '<button[^]*data-dna-tab="look"/); /* TC-014: Attention tab zero-hidden */
   assert.match(clientSrc, /workCount > 0 \? '<button[^]*data-dna-tab="work"/); /* TC-014: Working tab zero-hidden */
   assert.match(clientSrc, /savedTab === "work"/); /* TC-014: tab persistence accepts work */
@@ -131,7 +135,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /\.dna-badge\.dna-b-stop \{ background: var\(--dna-ok\); color:#fff; \}/); /* TC-009 */
   assert.match(clientSrc, /needCount = att\.length - byState\.working\.length/); /* operator 2026-11-06: Working excluded from the badge */
   assert.match(clientSrc, /var workCount = byState\.working\.length/); /* operator 2026-11-06: Focus badge = blue working + red attention */
-  assert.match(clientSrc, /dna-label">Focus</); /* operator 2026-11-06: block renamed Needs Attention → Focus */
+  assert.match(clientSrc, /dna-label">' \+ T\.focus/); /* operator 2026-11-06: block renamed Needs Attention → Focus */
   assert.match(clientSrc, /dna-badge dna-b-work/); /* blue pill for the working count */
   assert.match(clientSrc, /workCount > 0 \? '<span class="dna-badge dna-b-work">/); /* zero-hidden blue counter */
   assert.match(clientSrc, /var stopCount = byState\.stopped\.length/); /* TC-008: green pill = Stopped-by-you count */
