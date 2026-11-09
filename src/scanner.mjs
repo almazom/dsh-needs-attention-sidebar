@@ -270,7 +270,7 @@ async function doScan(now) {
       let st;
       try { st = statSync(file); } catch { continue; }
       if (st.mtimeMs < cutoff) continue; // freshness window (review P2-4)
-      cands.push({ id: dir, path: file, mtimeMs: st.mtimeMs, size: st.size });
+      cands.push({ id: dir, path: file, mtimeMs: st.mtimeMs, size: st.size, ws: ws });
     }
   }
   let degraded = 0;
@@ -314,6 +314,9 @@ async function doScan(now) {
   const waiting = [];
   entries.forEach((e, i) => {
     const cand = cands[i];
+    /* 2026-11-09 open-session fix: rows carry their workspace slug so the client can activate the right workspace group when the host has no rendered row (deep-link key is a no-op in the host). */
+    if (e.row) e.row.ws = cand.ws;
+    if (e.stateRow) e.stateRow.ws = cand.ws;
     const { lastTurn, lastApproval, lastDecision, lastEnd } = e;
     if (!lastTurn && !lastApproval) return;
     const fresh = now - cand.mtimeMs < FRESH_MS;
@@ -324,11 +327,11 @@ async function doScan(now) {
       && (!lastEnd || lastApproval.seq > lastEnd.seq)
       && (!lastDecision || lastApproval.seq > lastDecision.seq);
     if (approvalNewer) {
-      if (fresh) waiting.push({ id: cand.id, state: "waiting", title: e.title ? redact(e.title) : fallbackTitle, at: lastApproval.time });
+      if (fresh) waiting.push({ id: cand.id, state: "waiting", title: e.title ? redact(e.title) : fallbackTitle, at: lastApproval.time, ws: cand.ws });
       return;
     }
     const open = lastTurn && (!lastEnd || lastTurn.seq > lastEnd.seq);
-    if (open && fresh) working.push({ id: cand.id, state: "working", title: e.title ? redact(e.title) : fallbackTitle, at: lastTurn.time });
+    if (open && fresh) working.push({ id: cand.id, state: "working", title: e.title ? redact(e.title) : fallbackTitle, at: lastTurn.time, ws: cand.ws });
   });
   working.sort((a, b) => b.at - a.at);
   waiting.sort((a, b) => b.at - a.at);
