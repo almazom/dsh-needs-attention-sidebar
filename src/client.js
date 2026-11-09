@@ -189,6 +189,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
   ".dna-foldchev:hover { opacity:1; }",
   ".dna-foldchev svg { transition: transform .15s ease; }",
   ".dna-foldchev[data-dna-folded='1'] svg { transform: rotate(-90deg); }",
+  ".dna-foldchev[data-dna-foldstub] { margin: 2px auto 0; opacity: .55; }",
   "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } .dna-foldchev svg { transition: none; } }",
       /* TC-003 unseen-completion: seen done rows dim, unseen stay bright + '!' badge */
       ".dna-arow.dna-dim { opacity: .55; }",
@@ -344,7 +345,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states21-focusplus";
+    var DNA_BUILD = "states22-foldall";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -495,7 +496,9 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       if (!moreRow) {
         /* review P1: if the More row vanished (host rename/localization) while folded,
            restore everything — never leave the nav hidden without its restore control */
-        for (i = 0; i < rows.length; i++) { if (rows[i].style.display === "none") rows[i].style.display = ""; }
+        var stub0 = nav.querySelector("[data-dna-foldstub]");
+        if (stub0 && stub0.style.display !== "none") stub0.style.display = "none";
+        for (i = 0; i < rows.length; i++) { if (rows[i].hasAttribute("data-dna-foldstub")) continue; if (rows[i].style.display === "none") rows[i].style.display = ""; }
         var ns0 = document.querySelector('button[class*="_newSession"]');
         if (ns0 && ns0.style.display === "none") ns0.style.display = "";
         return;
@@ -522,6 +525,29 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         moreRow.appendChild(chev);
       }
       var folded = lsOn(LS_MORE_FOLDED);
+      /* operator override 2026-11-09: folded state keeps NO nav row — a compact stub restores the stack */
+      var stub = nav.querySelector("[data-dna-foldstub]");
+      if (!stub) {
+        stub = document.createElement("span"); /* span: the stub lives inside the nav list, never inside a host button */
+        stub.className = "dna-foldchev";
+        stub.setAttribute("data-dna-foldstub", "1");
+        stub.setAttribute("role", "button");
+        stub.setAttribute("tabindex", "0");
+        stub.innerHTML = FOLD_CHEV16;
+        stub.__dnaIco = FOLD_CHEV16;
+        stub.addEventListener("click", function (ev) {
+          ev.stopPropagation(); ev.preventDefault();
+          lsMark(LS_MORE_FOLDED, false);
+          navFoldApply();
+        });
+        stub.addEventListener("keydown", function (ev) {
+          if (ev.key !== "Enter" && ev.key !== " ") return;
+          ev.stopPropagation(); ev.preventDefault();
+          lsMark(LS_MORE_FOLDED, false);
+          navFoldApply();
+        });
+        nav.appendChild(stub);
+      }
       var ft = folded ? T.navUnfold : T.navFold;
       if (chev.__dnaIco !== FOLD_CHEV16) { chev.innerHTML = FOLD_CHEV16; chev.__dnaIco = FOLD_CHEV16; }
       if (chev.title !== ft) { chev.title = ft; chev.setAttribute("aria-label", ft); }
@@ -529,7 +555,12 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       if (chev.getAttribute("aria-expanded") !== fx) chev.setAttribute("aria-expanded", fx);
       var fd = folded ? "1" : "0";
       if (chev.getAttribute("data-dna-folded") !== fd) chev.setAttribute("data-dna-folded", fd);
-      for (i = 0; i < rows.length; i++) { var want = (rows[i] !== moreRow && folded) ? "none" : ""; if (rows[i].style.display !== want) rows[i].style.display = want; }
+      var stubWant = folded ? "" : "none";
+      if (stub.style.display !== stubWant) stub.style.display = stubWant;
+      if (stub.getAttribute("data-dna-folded") !== fd) stub.setAttribute("data-dna-folded", fd);
+      if (stub.title !== T.navUnfold) { stub.title = T.navUnfold; stub.setAttribute("aria-label", T.navUnfold); }
+      /* operator override 2026-11-09: fold hides EVERY nav row incl. the More row itself — restore via the small stub below */
+      for (i = 0; i < rows.length; i++) { if (rows[i].hasAttribute("data-dna-foldstub")) continue; var want = folded ? "none" : ""; if (rows[i].style.display !== want) rows[i].style.display = want; }
       var ns = document.querySelector('button[class*="_newSession"]');
       if (ns && ns.style.display !== (folded ? "none" : "")) ns.style.display = folded ? "none" : "";
     }
