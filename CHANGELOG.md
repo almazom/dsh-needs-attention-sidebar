@@ -3,6 +3,27 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.3.3] — 2026-11-09 — design restored to the demo look
+
+### In plain words
+Two visual regressions are gone. The working spinner is back to the calm pulse,
+the row remove-button only appears on hover, and the Focus header keeps its
+label on any window size — including zoomed ones where it used to vanish.
+
+### Technically
+- src/client.js: working marker back to opacity pulse (2s); dismiss x hover-only;
+  viewport MQ (max-width 1199.98px) removed — it hid the Focus label below 1200px
+  innerWidth (operator's zoomed retina window); DNA_BUILD states24-wide
+- tests/states.unit.test.mjs: pins updated + no-MQ regression pin
+
+### Check
+- [ ] Focus label visible with badges right-aligned at any window width
+- [ ] Working rows pulse gently; x appears only on row hover
+- [ ] Collapsed rail shows no block fragments
+
+### Known limitations
+- Eye (hide sessions) and More-fold ship on the dev channel (0.4.0-beta), not here.
+
 ## [0.3.2] — 2026-11-09
 
 ### Fixed

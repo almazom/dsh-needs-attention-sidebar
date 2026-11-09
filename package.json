@@ -1,6 +1,6 @@
 {
   "name": "@almazom/dsh-needs-attention-sidebar",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": false,
   "type": "module",
   "description": "Sidebar 'Needs attention' block for DeepSeek Harness: live Working / Attention / Finished session triage with fatal (red) vs rate-limit (amber) detection. Server-side on-request log scan, zero core edits.",
