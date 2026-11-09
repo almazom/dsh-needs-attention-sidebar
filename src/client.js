@@ -150,12 +150,13 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-more:hover { background: var(--dna-hover); }",
       ".dna-toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:2147483000; background: var(--dna-ink); color: var(--dna-bg); border-radius:8px; padding:9px 12px; font-size:12px; display:none; align-items:center; gap:10px; box-shadow:0 10px 30px rgba(0,0,0,.35); }",
       ".dna-tab-fin { flex:1.4; }",
+      ".dna-tab .dna-tab-t { overflow:hidden; text-overflow:ellipsis; }",
       ".dna-undo { border:0; background:transparent; color:inherit; font: 700 12px/1 -apple-system, system-ui, sans-serif; cursor:pointer; display:inline-flex; gap:5px; align-items:center; text-decoration:underline; }",
       "[data-dna-stale] { opacity:.55; }",
       ".dna-block[data-dna-stale] .dna-label::after { content:' · stale'; color: var(--dna-warn-text); }",
       ".dna-deg { width:6px; height:6px; border-radius:50%; background: var(--dna-warn); display:inline-block; margin-left:6px; flex:none; }",
       ".dna-tabs { display:flex; gap:2px; padding:2px 8px 0; }",
-      ".dna-tab { flex:1; display:flex; align-items:center; justify-content:center; height:26px; border:0; border-radius:8px; background:transparent; color: var(--dna-ink2); font: 400 12px/1 -apple-system, system-ui, sans-serif; cursor:pointer; }",
+      ".dna-tab { flex:1; display:flex; align-items:center; justify-content:center; height:26px; border:0; border-radius:8px; background:transparent; color: var(--dna-ink2); font: 400 12px/1 -apple-system, system-ui, sans-serif; cursor:pointer; white-space:nowrap; min-width:0; }",
       ".dna-tab[aria-selected=\"true\"] { background: var(--dna-hover); color: var(--dna-ink); font-weight:600; }",
       ".dna-tab:focus-visible { outline:2px solid var(--dna-err); outline-offset:-2px; }",
       ".dna-sub { display:flex; align-items:center; justify-content:space-between; height:24px; margin:2px 16px 0; padding:0 8px; font: 600 10px/16px -apple-system, system-ui, sans-serif; letter-spacing:.04em; text-transform:uppercase; color: var(--dna-ink2); }",
@@ -181,6 +182,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
       ".dna-block[data-dna-zh] .dna-sub { text-transform:none; letter-spacing:0; font-size:12px; }",
       ".dna-block[data-dna-zh] .dna-tab { font-size:13px; }",
+      /* TC-004 rail degrade: <1200px the host sidebar is a 35px rail — badge-only head */
+      "@media (max-width: 1199.98px) { .dna-block .dna-label, .dna-block .dna-hspace, .dna-block .dna-chev { display:none; } .dna-block .dna-head { justify-content:center; gap:6px; } }",
     ].join("\n");
     var style = document.createElement("style");
     style.setAttribute("data-plugin-css", "dsh-needs-attention");
@@ -324,7 +327,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states18-touch";
+    var DNA_BUILD = "states19-rail";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -490,9 +493,9 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         + '<span class="dna-chev">' + CHEV_ICON + '</span></div>'
         + '<div class="dna-group">'
         + '<div class="dna-tabs" role="tablist" aria-label="Focus views">'
-        + (workCount > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="work" aria-selected="' + String(sTab === "work") + '">' + T.tabWork + ' ' + workCount + '</button>' : '')
-        + (warnLen > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="look" aria-selected="' + String(sTab === "look") + '">' + T.tabLook + ' ' + warnLen + '</button>' : '')
-        + '<button type="button" class="dna-tab dna-tab-fin" role="tab" data-dna-tab="done" aria-selected="' + String(sTab === "done") + '">' + T.tabDone + ' ' + fin.length + (unseenCount ? T.newSuffix(unseenCount) : "") + '</button>'
+        + (workCount > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="work" aria-selected="' + String(sTab === "work") + '"><span class="dna-tab-t">' + T.tabWork + ' ' + workCount + '</span></button>' : '')
+        + (warnLen > 0 ? '<button type="button" class="dna-tab" role="tab" data-dna-tab="look" aria-selected="' + String(sTab === "look") + '"><span class="dna-tab-t">' + T.tabLook + ' ' + warnLen + '</span></button>' : '')
+        + '<button type="button" class="dna-tab dna-tab-fin" role="tab" data-dna-tab="done" aria-selected="' + String(sTab === "done") + '"><span class="dna-tab-t">' + T.tabDone + ' ' + fin.length + (unseenCount ? T.newSuffix(unseenCount) : "") + '</span></button>'
         + '</div>';
       if (items.unseenTop) html += '<div class="dna-div">' + T.unseenDiv + '</div>';
       for (var i = 0; i < items.length; i++) {
