@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.3.2] — 2026-11-09
+
+### Fixed
+
+- **Collapsed sidebar is clean.** When the left sidebar is collapsed to the icon rail, the Focus block no longer leaks clipped fragments (badges, text pieces) into the rail — it now hides completely and returns when you expand the sidebar.
+
+### In plain words
+
+- Если свернуть левый сайдбар в узкую полоску — блок «Focus» больше не оставляет в ней обломков (бейджи, куски текста). Он просто исчезает и возвращается при разворачивании.
+
 ## [0.3.1] — 2026-11-09
 
 ### Fixed
