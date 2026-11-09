@@ -103,7 +103,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         unseenDiv: "自上次访问以来",
         more: function (n) { return "还有 " + n + " 条"; },
         less: "收起",
-        grpFailed: "失败", grpLook: "查看", grpWait: "等待",
+        grpFailed: "失败", grpLook: "需查看", grpWait: "等待",
         dismissed: "已忽略 — ", undo: "撤销",
         openFailId: "无法打开该会话 ID", openFail: "无法打开此会话",
         opening: "正在打开 ", tail: "…",
@@ -182,6 +182,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
       ".dna-block[data-dna-zh] .dna-sub { text-transform:none; letter-spacing:0; font-size:12px; }",
       ".dna-block[data-dna-zh] .dna-tab { font-size:13px; }",
+      ".dna-block[data-dna-zh] .dna-div { font-size:12px; }",
       /* TC-004 rail degrade: <1200px the host sidebar is a 35px rail — badge-only head */
       "@media (max-width: 1199.98px) { .dna-block .dna-label, .dna-block .dna-hspace, .dna-block .dna-chev { display:none; } .dna-block .dna-head { justify-content:center; gap:6px; } }",
     ].join("\n");
@@ -472,11 +473,11 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       } else {
         var unseenTop = visits != null && fin.length && fin[0].at > visits;
         if (byState.ok.length) {
-          items.push({ sub: "Done", n: byState.ok.length });
+          items.push({ sub: T.stOk, n: byState.ok.length });
           byState.ok.forEach(function (s) { items.push({ row: s, isState: true }); });
         }
         if (byState.stopped.length) {
-          items.push({ sub: "Stopped by you", n: byState.stopped.length });
+          items.push({ sub: T.stStopped, n: byState.stopped.length });
           byState.stopped.forEach(function (s) { items.push({ row: s, isState: true }); });
         }
         items.unseenTop = unseenTop;

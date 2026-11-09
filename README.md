@@ -54,11 +54,6 @@ Three design rules:
 
 ## Install
 
-## Upgrading
-
-Install over the same URL (Plugins → Add plugin → paste the GitHub address, or `dsh plugin --profile web add https://github.com/almazom/dsh-needs-attention-sidebar`). The plugin remounts in place; your saved state (dismissals, collapsed head, last visit) is kept.
-
-
 Requires DSH `>=0.2.0-rc.1` (checked at install time via `engines.dsh`).
 
 Install straight from GitHub — no npm needed. In the DSH web UI open **Plugins → Add plugin** and paste the repository address, or run:
@@ -77,11 +72,15 @@ dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 
 No build step, no lifecycle scripts, plain JavaScript — nothing runs on install.
 
+## Upgrading
+
+Install over the same URL (Plugins → Add plugin → paste the GitHub address, or `dsh plugin --profile web add https://github.com/almazom/dsh-needs-attention-sidebar`). The plugin remounts in place; your saved state (dismissals, collapsed head, last visit) is kept.
+
 ## Reading the block
 
 ### Header chips
 
-`[2] blue` sessions working · `[1] green` finished since your last visit · `[4] amber` need attention. The chevron collapses the block to just the header row (persisted).
+`[2] blue` sessions working · `[1] green` sessions you stopped · `[4] amber` need attention. The chevron collapses the block to just the header row (persisted).
 
 ### Tabs
 

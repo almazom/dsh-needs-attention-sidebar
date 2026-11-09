@@ -121,6 +121,9 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   /* TC-001 i18n: locale table + zh detection + data-dna-zh hook */
   assert.match(clientSrc, /var I18N = \{/);
   assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(text\) \? "zh" : "en"\)/);
+  assert.match(clientSrc, /slice\(0, 40\)/, "toast title pinned");
+  assert.match(clientSrc, /dna-spin 1\.2s linear infinite/, "spin pinned");
+  assert.match(clientSrc, /prefers-reduced-motion[^}]*animation:\s*none/, "reduced-motion kills animation");
   assert.match(clientSrc, /data-dna-zh/);
   assert.match(clientSrc, /var warnLen = aliveErr\.length \+ byState\.look\.length \+ byState\.waiting\.length/); /* TC-014: Attention tab counts warnings only */
   assert.match(clientSrc, /sTab === "work"/); /* TC-014: Working has its own items branch */
