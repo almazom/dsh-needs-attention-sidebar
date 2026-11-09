@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.3.1] — 2026-11-09
+
+### Fixed
+
+- **Seen Done rows no longer dim.** After your last visit, completed rows stayed at 55% opacity — they now stay bright, exactly like the README screenshots. Unseen rows keep the green `!` badge ("new"); nothing else changed.
+
+### In plain words
+
+- Готовые строки больше не блекнут после просмотра — все «Done» строки яркие, как на картинках в README. Непросмотренные по-прежнему помечены зелёным `!`.
+
 ## [0.3.0] - 2026-11-07
 
 ### In plain words

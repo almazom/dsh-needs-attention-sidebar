@@ -175,8 +175,6 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       "@keyframes dna-spin { to { transform: rotate(360deg); } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
   "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } }",
-      /* TC-003 unseen-completion: seen done rows dim, unseen stay bright + '!' badge */
-      ".dna-arow.dna-dim { opacity: .55; }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
         + " background: var(--dna-ok); color: var(--dsh-color-bg-base,#1b1b1c); font-size:10px; line-height:14px; text-align:center; font-weight:600; }",
       /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
@@ -328,7 +326,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states20-toast";
+    var DNA_BUILD = "states21-bright";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -346,10 +344,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     }
     function stateRowHtml(s, hidden) {
       var lv = stateLvl(s);
-      /* TC-003: seen done rows dim (asymmetric attention — errors NEVER dim); unseen done rows bright + '!' */
-      var dim = s.state === "ok" && !isUnseen(s);
       var dot = s.state === "ok" && isUnseen(s) ? '<span class="dna-new">!</span>' : '';
-      return '<div class="dna-arow ' + lv.cls + (dim ? " dna-dim" : "") + '" data-dna-id="' + esc(s.id) + '" data-dna-key="' + esc(dismissKey(s)) + '"'
+      return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(s.id) + '" data-dna-key="' + esc(dismissKey(s)) + '"'
         + ' role="button" tabindex="0" aria-label="' + esc((s.title || id8(s.id)) + " — " + T[lv.word]) + '"'
         + ' title="' + esc(stateTip(s)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
