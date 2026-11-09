@@ -189,6 +189,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
   ".dna-foldchev:hover { opacity:1; }",
   ".dna-foldchev svg { transition: transform .15s ease; }",
   ".dna-foldchev[data-dna-folded='1'] svg { transform: rotate(-90deg); }",
+  /* Rail-mode cleanup (operator report 2026-11-09): when the host collapses the sidebar
+     to the icon rail it marks our section root with *_rail / *_railIn classes — our block,
+     injected eye and fold chevron would otherwise leak as clipped fragments into the rail. */
+  '[class*="_rail"] [data-dna-block], [class*="_rail"] [data-dna-eye], [class*="_rail"] [data-dna-foldchev] { display: none !important; }',
   "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } .dna-foldchev svg { transition: none; } }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
         + " background: var(--dna-ok); color: var(--dsh-color-bg-base,#1b1b1c); font-size:10px; line-height:14px; text-align:center; font-weight:600; }",
@@ -342,7 +346,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states28-bright";
+    var DNA_BUILD = "states29-rail";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
