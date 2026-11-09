@@ -68,10 +68,18 @@ dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 
 就这样。该命令把包装进 profile；因为包声明了 `dsh.bundle.patch`，DSH 会自动注册插件的 cordis 补丁。重启 Web 车道（或刷新页面），**Focus** 区块就出现在 *Workspaces* 上方。
 
+什么都没出现？这是设计如此 —— 只有需要你注意的时候，区块才会出现。
+
 包发布到 npm 之后，也可以用包名安装（效果相同）：
 
 ```bash
 dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
+```
+
+尝鲜通道（预发布）：`#dev` 分支比稳定版更早一步（当前：隐藏会话列表的眼睛按钮、导航折叠）。可能有毛边；上面的普通地址永远指向稳定版。
+
+```bash
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
 ```
 
 无构建步骤、无生命周期脚本、纯 JavaScript —— 安装时什么都不执行。
@@ -153,7 +161,7 @@ window.__DNA_STATUS__ 诊断               → 脱敏标题 → 行（≤20）�
 
 ```bash
 npm install        # 仅开发需要：无需构建，纯 JS
-npm test           # 44 个测试（node:test）—— 扫描器、路由、客户端、接线
+npm test           # 45 个测试（node:test）—— 扫描器、路由、客户端、接线
 ```
 
 ```

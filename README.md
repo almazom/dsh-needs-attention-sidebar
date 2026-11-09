@@ -64,6 +64,8 @@ dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 
 That's it. The command installs the package into the profile, and because the package declares `dsh.bundle.patch`, DSH auto-registers the plugin's cordis patch. Restart the web lane (or reload the page) and the **Focus** block appears above *Workspaces*.
 
+Nothing appears? That is the design — the block shows itself only when something needs your attention.
+
 Once the package is also published to npm, the package name works as an alternative:
 
 ```bash
@@ -71,6 +73,12 @@ dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 ```
 
 No build step, no lifecycle scripts, plain JavaScript — nothing runs on install.
+
+**Dev channel (pre-release):** the `#dev` branch carries the next version ahead of stable (currently: an eye button that hides the session list, and a nav fold). Expect rough edges; the plain address above always points at the stable build.
+
+```bash
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
+```
 
 ## Upgrading
 
@@ -153,7 +161,7 @@ The client carries a strip-states guard: paired with an older server build it fa
 
 ```bash
 npm install        # dev only: nothing to build, plain JS
-npm test           # 44 tests (node:test) — scanner, host route, client, wiring
+npm test           # 45 tests (node:test) — scanner, host route, client, wiring
 ```
 
 ```

@@ -344,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states26-gated";
+    var DNA_BUILD = "states27-esc";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -385,7 +385,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function liveRowHtml(s, hidden) {
       var lv = stateLvl(s);
       var right = s.state === "working"
-        ? '<span class="dna-t dna-tick" data-dna-tick data-since="' + s.at + '">' + esc(fmtDur(Date.now() - s.at)) + '</span>'
+        ? '<span class="dna-t dna-tick" data-dna-tick data-since="' + esc(s.at) + '">' + esc(fmtDur(Date.now() - s.at)) + '</span>'
         : '<span class="dna-t">' + esc(fmtRel(s.at)) + '</span>';
       /* operator report 2026-11-06: live rows MUST open the session like every sidebar
          row (Nielsen H2). Still no dismiss × — an alive session leaves its group alone. */

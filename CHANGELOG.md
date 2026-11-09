@@ -3,12 +3,21 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.4.0-beta.1] - 2026-11-09
+
+### In plain words (demo-day fixes — the alpha is now actually usable)
+- **The eye icon is now visible.** The host clamped the header action row to the width of two icons, so the third button rendered but stayed clipped off-screen at every window size (caught in a live session, fixed by lifting that clamp inline for our button).
+- **The nav fold landed in its final shape:** the chevron lives on the "More" row and hides More + Plugins + Automation tasks; a Duty row survives when you have one. No Duty row → the chevron never appears and the native More dropdown stays untouched (universal gate — the feature is ours, other users keep stock DSH).
+- The fold is session-only (reload restores); the eye state persists across reloads.
+- Hardening: every interpolated attribute now goes through the escaper, including the ticking-duration anchor (security review finding).
+- Supersedes v0.4.0-alpha.1, whose eye icon was broken (invisible).
+
 ## [0.4.0-alpha.1] - 2026-11-09
 
 ### In plain words (dev channel — try the new controls, expect rough edges)
 - A new **eye icon** in the sidebar section header (next to search / settings) hides the whole session list; the header label keeps a count ("Workspaces · 13") so you always know how much is hidden. Click again to show.
-- The **"More" row in the left navigation** got a small chevron: click it to fold the nav stack (Plugins / Automation / Duty disappear, More stays as the restore control).
-- Both states survive a page reload and are fully undoable — nothing is lost.
+- The **"More" row in the left navigation** got a small chevron to tuck the nav stack (final shape landed in 0.4.0-alpha.2: More and the items above it hide, Duty stays when you have one).
+- The eye state survives a page reload; the nav fold is session-only — a reload restores the navigation.
 - Chinese hosts get localized tooltips; the detection of the nav row works in both EN and 中文.
 
 ### Upgrading
