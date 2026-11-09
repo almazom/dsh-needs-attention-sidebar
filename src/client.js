@@ -344,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states24-dutykeep";
+    var DNA_BUILD = "states25-dutyopt";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -437,7 +437,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
     var moreHidden = false; /* per-page only: reload restores the More row (operator 2026-11-09: no extra buttons, no persistence) */
     var MORE_TOKENS = ["More", "更多"];
-    var DUTY_TOKENS = ["Duty", "Дежурный"]; /* operator 2026-11-09: the Duty row survives the hide */ /* detection is bilingual — zh hosts localize the nav row */
+    var DUTY_TOKENS = ["duty", "дежурный"]; /* universal rule (operator 2026-11-09): the Duty row survives the hide ONLY when a Duty row exists; otherwise the whole nav hides */ /* detection is bilingual — zh hosts localize the nav row */
     function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
     function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
     function sessionEyeApply(header) {
@@ -526,10 +526,9 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       }
       /* operator 2026-11-09: hide More + Plugins + Automation tasks, keep Duty; New Session stays */
       for (i = 0; i < rows.length; i++) {
-        var t2 = (rows[i].textContent || "").trim();
-        var al2 = rows[i].getAttribute("aria-label");
-        var isDuty = DUTY_TOKENS.indexOf(t2) !== -1 || DUTY_TOKENS.indexOf(al2) !== -1;
-        var want = (moreHidden && !isDuty) ? "none" : "";
+        var t2 = ((rows[i].textContent || "") + " " + (rows[i].getAttribute("aria-label") || "")).toLowerCase();
+        var isDutyRow = DUTY_TOKENS.some(function (tok) { return t2.indexOf(tok) !== -1; });
+        var want = (moreHidden && !isDutyRow) ? "none" : "";
         if (rows[i].style.display !== want) rows[i].style.display = want;
       }
       var ft = T.navFold;

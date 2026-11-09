@@ -107,7 +107,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /var DNA_BUILD = "states24-dutykeep"/); /* states24-dutykeep = hide More+Plugins+Automation, keep Duty */
+  assert.match(clientSrc, /var DNA_BUILD = "states25-dutyopt"/); /* states25-dutyopt = keep Duty only when a Duty row exists, else hide the whole nav */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -222,12 +222,12 @@ test("TC-005 AC4: dismiss first-click — source pins (in-place removal, batched
 });
 
 test("TC-010/011: focus features — eye + nav fold source pins", () => {
-  assert.match(clientSrc, /var DNA_BUILD = "states24-dutykeep"/);
+  assert.match(clientSrc, /var DNA_BUILD = "states25-dutyopt"/);
   assert.match(clientSrc, /var LS_SESSIONS_HIDDEN = "dsh-needs-attention\.sessionsHidden"/);
   assert.match(clientSrc, /var moreHidden = false/); /* per-page flag: reload restores the More row */
   assert.match(clientSrc, /data-dna-eye/); /* eye injected into host headerActions */
   assert.match(clientSrc, /data-dna-foldchev/); /* chevron span inside host More row */
-  assert.match(clientSrc, /var DUTY_TOKENS = \["Duty", "Дежурный"\]/); /* operator: Duty row survives the hide */
+  assert.match(clientSrc, /the Duty row survives the hide ONLY when a Duty row exists/); /* universal rule */
   assert.match(clientSrc, /eyeHide: "Hide session list", eyeShow: "Show session list"/);
   assert.match(clientSrc, /eyeHide: "隐藏会话列表", eyeShow: "显示会话列表"/);
   /* F1 label cue tolerated by anchor match: base = text minus " · N" suffix */
