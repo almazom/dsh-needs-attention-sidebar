@@ -5,6 +5,21 @@ Format: Keep a Changelog; versioning: SemVer.
 
 ## [0.3.0] - 2026-11-07
 
+### In plain words
+- The plugin now speaks Chinese: if your DSH runs in 中文, the Focus block is fully translated.
+- The blue "Working" marker spins — alive sessions are visible at a glance.
+- The dismiss × is faintly visible without hover (touch screens can dismiss too).
+- Tab labels never wrap; on narrow windows (<1200px) the block degrades to a compact badge-only head.
+- The toast now names the row you dismissed (was: an id fragment).
+- Docs: badge color corrected (unseen "!" is green), upgrade notes added.
+
+### Upgrading
+Reinstall from the same GitHub URL (`dsh plugin … add https://github.com/almazom/dsh-needs-attention-sidebar` or paste it in Plugins → Add plugin). Your dismissals/collapse state survives (same local storage keys).
+
+### Known limitations
+- The hide-sessions eye and the More-block collapse ship in v0.4.0-alpha (prototyped separately).
+- The route path and internal ids are stable; the npm-scope name changed in 0.3.0 (@almazom/dsh-needs-attention → @almazom/dsh-needs-attention-sidebar) — old installs keep working but update the URL.
+
 ### Added
 - **Tabs**: Working / Attention / Finished — three-tab triage instead of one mixed list (TC-014). Working sessions live in their own tab; the Attention tab holds only warnings (errors + look + waiting); the Finished tab shows ok + stopped rows with a `· N new` unseen counter.
 - **Unseen tracking**: `!` badges on finished rows you have not looked at yet, plus a "since your last visit" divider (localStorage `dsh.na.seen` / `dsh.na.lastVisit`).
@@ -21,7 +36,7 @@ Format: Keep a Changelog; versioning: SemVer.
 - State table: completed→ok, blocked/max-tokens→look, aborted:hook→look, aborted:user/parent→stopped (you stopped it), disposed/legacy/forked hidden; 429/rate-limit/quota/billing/5-hour patterns → amber "limit", all other terminal errors → red "fatal".
 
 ### Security
-- Route admits only the authenticated harness connection (or loopback); exact-table guard covers the 2026-10-30 P0 finding that `/api/*` routes bypass prefix-based gates.
+- Security property (verified 2026-10-30): the plugin's `/api/…` route always guards itself — exact-table route matches happen BEFORE the host's prefix gate, so the route can never rely on host middleware that does not cover it. Auth check: unauthenticated requests get 401 from the plugin's own guard.
 
 ## [0.2.0] - 2026-10-31
 

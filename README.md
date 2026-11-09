@@ -53,6 +53,11 @@ Three design rules:
 
 ## Install
 
+## Upgrading
+
+Install over the same URL (Plugins → Add plugin → paste the GitHub address, or `dsh plugin --profile web add https://github.com/almazom/dsh-needs-attention-sidebar`). The plugin remounts in place; your saved state (dismissals, collapsed head, last visit) is kept.
+
+
 Requires DSH `>=0.2.0-rc.1` (checked at install time via `engines.dsh`).
 
 Install straight from GitHub — no npm needed. In the DSH web UI open **Plugins → Add plugin** and paste the repository address, or run:
@@ -84,7 +89,7 @@ No build step, no lifecycle scripts, plain JavaScript — nothing runs on instal
   - **FAILED** (red ⊗) — the session's last terminal event is a fatal turn error/abort (5xx, auth, model failure, 413 payload).
   - **LOOK** (amber ◉) — states that usually mean degraded output or a stall: `blocked`, `max-tokens` truncation, hook abort, or rate-limit pressure (429 / quota / billing / 5-hour cap patterns → this amber "limit" class, not red).
   - **WAITING** (amber ⛨) — a tool/approval request has been sitting unanswered.
-- **Finished N · M new** — completed (green ✓) and stopped-by-you (muted ⏸) sessions. Rows you have not opened since they finished carry an amber `!` badge; a divider marks everything "since your last visit".
+- **Finished N · M new** — completed (green ✓) and stopped-by-you (muted ⏸) sessions. Rows you have not opened since they finished carry a green `!` badge ("new", not "alarm" — attention is the red/amber groups' job); a divider marks everything "since your last visit".
 
 ### Row affordances
 
