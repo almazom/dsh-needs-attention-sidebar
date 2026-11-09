@@ -344,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states25-dutyopt";
+    var DNA_BUILD = "states26-gated";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -492,6 +492,24 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         var t = (rows[i].textContent || "").trim();
         var al = rows[i].getAttribute("aria-label");
         if (MORE_TOKENS.indexOf(al) !== -1 || MORE_TOKENS.indexOf(t) !== -1) { moreRow = rows[i]; break; }
+      }
+      /* universal gate (operator 2026-11-09): the fold feature exists only when a Duty row
+         can survive it — without Duty the chevron is not rendered at all and the native
+         More dropdown stays untouched for other users */
+      var hasDuty = false, gi;
+      for (gi = 0; gi < rows.length; gi++) {
+        var gt = ((rows[gi].textContent || "") + " " + (rows[gi].getAttribute("aria-label") || "")).toLowerCase();
+        if (DUTY_TOKENS.some(function (tok) { return gt.indexOf(tok) !== -1; })) { hasDuty = true; break; }
+      }
+      if (!hasDuty) {
+        if (moreHidden) {
+          /* Duty vanished mid-session: never leave the nav hidden without its anchor */
+          moreHidden = false;
+          for (i = 0; i < rows.length; i++) { if (rows[i].style.display !== "") rows[i].style.display = ""; }
+          var nsG = document.querySelector('button[class*="_newSession"]');
+          if (nsG && nsG.style.display !== "") nsG.style.display = "";
+        }
+        return;
       }
       if (!moreRow) {
         /* review P1: if the More row vanished (host rename/localization) while hidden,
