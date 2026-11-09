@@ -46,11 +46,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/almazom/dsh-needs-attention.git"
+    "url": "git+https://github.com/almazom/dsh-needs-attention-sidebar.git"
   },
   "bugs": {
-    "url": "https://github.com/almazom/dsh-needs-attention/issues"
+    "url": "https://github.com/almazom/dsh-needs-attention-sidebar/issues"
   },
-  "homepage": "https://github.com/almazom/dsh-needs-attention#readme",
+  "homepage": "https://github.com/almazom/dsh-needs-attention-sidebar#readme",
   "license": "MIT"
 }
