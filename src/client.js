@@ -27,8 +27,10 @@
  *   - error text is exposed to assistive tech (aria-label + title), not only a tooltip.
  *   - head/rows are keyboard reachable (tabindex + Enter/Space), dismiss is visible
  *     on focus instead of display:none.
- *   - the deep-link fallback validates the session id before writing it to the
- *     core-owned dsh.sessions.current key (same-origin poisoning, security P2).
+ *   - row click opens the session through the host's own sidebar rows; when the
+ *     host has no rendered row for it, the session's workspace is activated first
+ *     (the dsh.sessions.current deep-link key proved a no-op in the host core,
+ *     security P2 stands — we never write core-owned state).
  */
 if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoader__.load({
   id: "@almazom/dsh-needs-attention-sidebar",
@@ -54,7 +56,6 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     var LS_TAB = "dsh.needs-attention.tab";
     var LS_SEEN = "dsh.na.seen"; /* TC-003 unseen-completion: {sessionId: tsOfLastOpen} */
     var VISIBLE_ROWS = 6;
-    var SESSION_ID_RE = /^session-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
     var ERR_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
     var WARN_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.699 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .699 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -95,7 +96,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         dismissed: "dismissed — ", undo: "Undo",
         eyeHide: "Hide session list", eyeShow: "Show session list",
         navFold: "Collapse navigation",
-        openFailId: "cannot open this session id", openFail: "cannot open this session",
+        openFail: "cannot open this session",
         opening: "opening ", tail: "…",
         lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
         stWorking: "Working", stWaiting: "Waiting for approval", stLook: "Look · needs your attention", stStopped: "Stopped by you", stOk: "Done",
@@ -113,7 +114,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         dismissed: "已忽略 — ", undo: "撤销",
         eyeHide: "隐藏会话列表", eyeShow: "显示会话列表",
         navFold: "折叠导航",
-        openFailId: "无法打开该会话 ID", openFail: "无法打开此会话",
+        openFail: "无法打开此会话",
         opening: "正在打开 ", tail: "…",
         lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
         stWorking: "运行中", stWaiting: "等待批准", stLook: "需要你查看", stStopped: "已被你停止", stOk: "已完成",
@@ -295,7 +296,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function rowHtml(r, hidden) {
       var lv = LVL[r.severity] || LVL.fatal;
       var tip = rowTip(r);
-      return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(r.id) + '" data-dna-key="' + esc(dismissKey(r)) + '"'
+      return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(r.id) + '" data-dna-key="' + esc(dismissKey(r)) + '" data-dna-ws="' + esc(r.ws || "") + '"'
         + ' role="button" tabindex="0" aria-label="' + esc((r.title || id8(r.id)) + " — " + (r.lastError || T[lv.word])) + '"'
         + ' title="' + esc(tip) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
@@ -346,7 +347,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states31-wide";
+    var DNA_BUILD = "states32-openws";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -365,7 +366,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function stateRowHtml(s, hidden) {
       var lv = stateLvl(s);
       var dot = s.state === "ok" && isUnseen(s) ? '<span class="dna-new">!</span>' : '';
-      return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(s.id) + '" data-dna-key="' + esc(dismissKey(s)) + '"'
+      return '<div class="dna-arow ' + lv.cls + '" data-dna-id="' + esc(s.id) + '" data-dna-key="' + esc(dismissKey(s)) + '" data-dna-ws="' + esc(s.ws || "") + '"'
         + ' role="button" tabindex="0" aria-label="' + esc((s.title || id8(s.id)) + " — " + T[lv.word]) + '"'
         + ' title="' + esc(stateTip(s)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
         + '<span class="dna-slot">' + lv.icon + '</span>'
@@ -389,7 +390,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         : '<span class="dna-t">' + esc(fmtRel(s.at)) + '</span>';
       /* operator report 2026-11-06: live rows MUST open the session like every sidebar
          row (Nielsen H2). Still no dismiss × — an alive session leaves its group alone. */
-      return '<div class="dna-arow ' + lv.cls + '" data-dna-live="' + esc(s.id) + '" data-dna-id="' + esc(s.id) + '"'
+      return '<div class="dna-arow ' + lv.cls + '" data-dna-live="' + esc(s.id) + '" data-dna-id="' + esc(s.id) + '" data-dna-ws="' + esc(s.ws || "") + '"'
         + ' role="button" tabindex="0"'
         + ' aria-label="' + esc((s.title || id8(s.id)) + " — " + T[lv.word] + " — open session") + '"'
         + ' title="' + esc(T[lv.word] + "\nat " + fmtAbs(s.at)) + '"' + (hidden ? ' style="display:none"' : "") + '>'
@@ -674,17 +675,38 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       try { localStorage.setItem(LS_COLLAPSED, c ? "1" : "0"); } catch (e) {}
     }
 
-    function openSession(sid) {
+    function normWs(v) { return String(v || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+    function openSession(sid, ws) {
       var native = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
-      if (native) { native.click(); return; } /* same open-session dispatch as native rows (REQ-002) */
-      /* P1-B: the target row is often NOT rendered (workspace groups collapse at 5 rows),
-         so fall back to the canonical deep-link path — but only for a well-formed id,
-         because dsh.sessions.current is core-owned state (security P2). */
-      if (!SESSION_ID_RE.test(String(sid))) { toast(T.openFailId, false); return; }
-      try { localStorage.setItem("dsh.sessions.current", JSON.stringify({ sessionId: sid })); }
-      catch (e) { toast(T.openFail, false); return; }
-      toast(T.opening + id8(sid) + T.tail, false);
-      setTimeout(function () { try { location.reload(); } catch (e) {} }, 150);
+      if (native) { native.click(); return; } /* same open-session dispatch as native rows (REQ-002); also hits collapsed-group rows */
+      /* 2026-11-09 operator report ("press on Attention tab … never get to the proper
+         session page"): the old deep-link fallback (dsh.sessions.current + reload) is a
+         NO-OP — the host core never consumes that key at boot, so the app lands home.
+         Rebuilt: activate the session's own workspace row first (the host then renders
+         that workspace's session rows), then click the session row once it appears.
+         Slug matching is suffix-based: slug "--Users-…-temp--" ends with host title
+         "temp"; "…-default-workspace--" ends with "Default workspace". */
+      var want = normWs(ws);
+      if (want) {
+        var wr = document.querySelectorAll('[data-row-key^="workspace:"]');
+        for (var i = 0; i < wr.length; i++) {
+          var hn = normWs(wr[i].textContent);
+          if (hn && want.slice(-hn.length) === hn) {
+            wr[i].click();
+            toast(T.opening + id8(sid) + T.tail, false);
+            var t0 = Date.now();
+            (function poll() {
+              var row = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
+              if (row) { row.click(); return; }
+              if (Date.now() - t0 < 2500) setTimeout(poll, 120);
+              else toast(T.openFail, false);
+            })();
+            return;
+          }
+        }
+      }
+      toast(T.openFail, false);
     }
 
     /* TC-004: batch rebuilds after in-place removals — one render per burst, 250ms later */
@@ -727,7 +749,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         return;
       }
       var row = ev.target.closest("[data-dna-id]");
-      if (row) { markSeen(row.getAttribute("data-dna-id")); openSession(row.getAttribute("data-dna-id")); }
+      if (row) { markSeen(row.getAttribute("data-dna-id")); openSession(row.getAttribute("data-dna-id"), row.getAttribute("data-dna-ws")); }
     });
 
     /* keyboard parity: the head and rows are tabbable (product P2) */
@@ -741,7 +763,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var more = t.closest("[data-dna-more]");
       if (more) { ev.preventDefault(); expanded = !expanded; try { localStorage.setItem(LS_EXPANDED, expanded ? "1" : "0"); } catch (e) {} render(true); return; }
       var row = t.closest("[data-dna-id]");
-      if (row) { ev.preventDefault(); markSeen(row.getAttribute("data-dna-id")); openSession(row.getAttribute("data-dna-id")); } /* F13: keyboard counts as seen too */
+      if (row) { ev.preventDefault(); markSeen(row.getAttribute("data-dna-id")); openSession(row.getAttribute("data-dna-id"), row.getAttribute("data-dna-ws")); } /* F13: keyboard counts as seen too */
     });
 
     function toast(msg, undoable) {
