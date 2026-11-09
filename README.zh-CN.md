@@ -76,6 +76,18 @@ dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 
 无构建步骤、无生命周期脚本、纯 JavaScript —— 安装时什么都不执行。
 
+### 分步安装图解
+
+| | |
+|---|---|
+| **1.** 在侧边栏打开 **插件（Plugins）**。 | ![第 1 步 —— 侧边栏的 Plugins](screenshots/install-step-1.png) |
+| **2.** 点击 **Add plugin（添加插件）**。 | ![第 2 步 —— Add plugin 按钮](screenshots/install-step-2.png) |
+| **3.** 粘贴 `github:almazom/dsh-needs-attention-sidebar`，点击 **Install**。 | ![第 3 步 —— 粘贴地址并 Install](screenshots/install-step-3.png) |
+| **4.** 点击 **Enable now** 确认启用。 | ![第 4 步 —— Installed，Enable now](screenshots/install-step-4.png) |
+| **5.** 插件出现在 **Installed plugins** 列表中 —— 侧边栏里的 **Focus** 区块即刻生效。 | ![第 5 步 —— 已出现在 Installed plugins](screenshots/install-step-5.png) |
+
+（以上五张截图来自在一台全新的 DSH `0.2.1-rc.3` 实例上的真实安装过程 —— 所见即所得。）
+
 ## 读懂区块
 
 ### 头部徽标

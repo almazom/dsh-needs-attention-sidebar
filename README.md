@@ -72,6 +72,18 @@ dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 
 No build step, no lifecycle scripts, plain JavaScript — nothing runs on install.
 
+### Install in pictures
+
+| | |
+|---|---|
+| **1.** Open **Plugins** in the sidebar. | ![Step 1 — Plugins in the sidebar](screenshots/install-step-1.png) |
+| **2.** Click **Add plugin**. | ![Step 2 — Add plugin button](screenshots/install-step-2.png) |
+| **3.** Paste `github:almazom/dsh-needs-attention-sidebar` and click **Install**. | ![Step 3 — paste the address and Install](screenshots/install-step-3.png) |
+| **4.** Confirm with **Enable now**. | ![Step 4 — Installed, Enable now](screenshots/install-step-4.png) |
+| **5.** The plugin shows up under **Installed plugins** — and the **Focus** block is live in your sidebar. | ![Step 5 — listed under Installed plugins](screenshots/install-step-5.png) |
+
+(All five shots are from a real install on a clean DSH `0.2.1-rc.3` instance — what you see is what you get.)
+
 ## Upgrading
 
 Install over the same URL (Plugins → Add plugin → paste the GitHub address, or `dsh plugin --profile web add https://github.com/almazom/dsh-needs-attention-sidebar`). The plugin remounts in place; your saved state (dismissals, collapsed head, last visit) is kept.
