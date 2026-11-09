@@ -446,6 +446,12 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       if (!list && header.nextElementSibling && header.nextElementSibling.querySelector('[class*="_sessionRow"],[class*="_projectRow"]')) list = header.nextElementSibling;
       var label = header.querySelector('[class*="_sectionLabel"]');
       if (!actions || !list || !label) return;
+      /* host pins the actions row at 2 native icons: max-width:60px (+ overflow hidden
+         upstream) — a 3rd injected icon is laid out but clipped INVISIBLE
+         (operator-reported 2026-11-09 via Safari; DOM-presence checks missed it).
+         Lift the cap inline; inline style survives host CSS rules. */
+      if (actions.style.width !== "auto") actions.style.width = "auto";
+      if (actions.style.maxWidth !== "none") actions.style.maxWidth = "none";
       var eye = actions.querySelector("[data-dna-eye]");
       if (!eye) {
         eye = document.createElement("button");
@@ -821,6 +827,11 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       pending = true;
       requestAnimationFrame(function () {
         pending = false;
+        /* TC-010/011: React re-renders wipe our injected controls (eye/chev are
+           foreign to the host vdom) — re-apply them directly on any host DOM
+           change, not only on the poll render cadence. Writes inside are
+           guarded, so this self-quiesces after one append. */
+        try { focusFeatures(findAnchor()); } catch (e) {}
         if ((rows.length || stateRows.length) && !document.querySelector("[data-dna-block]")) render(true);
       });
     });

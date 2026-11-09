@@ -235,6 +235,8 @@ test("TC-010/011: focus features — eye + nav fold source pins", () => {
   assert.match(clientSrc, /EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"/);
   /* review round: bilingual More detection + write-guards + no-nav-loss restore pass */
   assert.match(clientSrc, /var MORE_TOKENS = \["More", "更多"\]/);
+  assert.match(clientSrc, /max-width:60px/); /* actions row cap must be lifted inline — clipping regression */
+  assert.match(clientSrc, /React re-renders wipe our injected controls/); /* observer re-apply — React wipes foreign nodes */
   assert.match(clientSrc, /__dnaIco/); /* identical writes guarded — MutationObserver loop */
   assert.match(clientSrc, /never leave the nav hidden without its restore control/);
   /* fold chevron ≤150ms transition, killed under reduced motion */
