@@ -142,7 +142,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-arow.dna-lv-amber .dna-slot, .dna-arow.dna-lv-amber .dna-t { color: var(--dna-warn-text); }",
       ".dna-ttl { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:20px; }",
       ".dna-t { font-size:10px; line-height:16px; flex:none; margin-left:6px; }",
-      ".dna-x { flex:none; border:0; background:transparent; color: var(--dna-ink2); cursor:pointer; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; padding:0; margin:0 -2px 0 0; opacity:0; }",
+      ".dna-x { flex:none; border:0; background:transparent; color: var(--dna-ink2); cursor:pointer; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; padding:0; margin:0 -2px 0 0; opacity:.35; }",
       ".dna-arow:hover .dna-x, .dna-x:focus-visible { opacity:1; }",
       ".dna-x:hover { color: var(--dna-err); }",
       ".dna-x svg { pointer-events: none; }",
@@ -324,7 +324,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states17-spin";
+    var DNA_BUILD = "states18-touch";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
