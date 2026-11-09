@@ -3,6 +3,27 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.4.0-beta.2] — 2026-11-09 — beta.1 + design restored to the demo look
+
+### In plain words
+Same two visual fixes as v0.3.3, on top of the beta feature set (eye + fold).
+The working spinner is calm again, the remove-button hides until hover, and the
+Focus header label survives any window width, zoom included.
+
+### Technically
+- src/client.js: opacity pulse instead of spin; dismiss x hover-only; viewport MQ
+  (max-width 1199.98px) removed (hid Focus label <1200px innerWidth);
+  DNA_BUILD states31-wide
+- tests/states.unit.test.mjs: pins updated + no-MQ regression pin
+
+### Check
+- [ ] Eye icon visible in the Sessions header at ~1270px windows
+- [ ] Focus label + counters right-aligned at any width
+- [ ] Fold chevron still appears only when a Duty row exists
+
+### Known limitations
+- Fold state is session-only by design (a reload restores the nav).
+
 ## [0.4.0-beta.1] - 2026-11-09
 
 ### In plain words (demo-day fixes — the alpha is now actually usable)
