@@ -93,7 +93,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         opening: "opening ", tail: "…",
         lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
         stWorking: "Working", stWaiting: "Waiting for approval", stLook: "Look · needs your attention", stStopped: "Stopped by you", stOk: "Done",
-        stale: " · stale", win: function (h) { return " · last " + h + "h"; }, unread: function (n) { return " · " + n + " unreadable log(s)"; },
+        win: function (h) { return " · last " + h + "h"; }, unread: function (n) { return " · " + n + " unreadable log(s)"; },
       },
       zh: {
         focus: "焦点",
@@ -109,7 +109,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         opening: "正在打开 ", tail: "…",
         lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
         stWorking: "运行中", stWaiting: "等待批准", stLook: "需要你查看", stStopped: "已被你停止", stOk: "已完成",
-        stale: " · 无响应", win: function (h) { return " · 最近 " + h + " 小时"; }, unread: function (n) { return " · " + n + " 个日志不可读"; },
+        win: function (h) { return " · 最近 " + h + " 小时"; }, unread: function (n) { return " · " + n + " 个日志不可读"; },
       },
     };
     var LOCALE = "en";
@@ -388,7 +388,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       tickTimer = setInterval(function () {
         if (document.hidden) return;
         var ticks = document.querySelectorAll("[data-dna-tick]");
-        if (!ticks.length) { /* review P3-2: no Working rows left — stop the interval */ 
+        if (!ticks.length) { /* review P3-2: no Working rows left — stop the interval */
           clearInterval(tickTimer);
           tickTimer = null;
           return;
@@ -482,7 +482,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         items.unseenTop = unseenTop;
       }
       var shown = 0;
-      var html = '<div class="dna-block" data-dna-block data-dna-build="' + DNA_BUILD + '"' + (LOCALE === "zh" ? ' data-dna-zh="1"' : "") + '>' 
+      var html = '<div class="dna-block" data-dna-block data-dna-build="' + DNA_BUILD + '"' + (LOCALE === "zh" ? ' data-dna-zh="1"' : "") + '>'
         + '<div class="dna-head' + (collapsed ? " dna-collapsed" : "") + '" role="button" tabindex="0" aria-expanded="' + String(!collapsed) + '" title="' + esc(headTitle) + '">'
         + '<span class="dna-label">' + T.focus + '</span>'
         + (meta.degraded ? '<span class="dna-deg" title="' + esc(meta.degraded + " unreadable log(s)") + '"></span>' : '')
