@@ -166,14 +166,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-div::before, .dna-div::after { content:'—'; opacity:.4; }",
       ".dna-arow.dna-lv-ok .dna-slot, .dna-arow.dna-lv-ok .dna-t { color: var(--dna-ok); }",
       ".dna-arow.dna-lv-mute .dna-slot, .dna-arow.dna-lv-mute .dna-t { color: var(--dna-mute); }",
-      /* TC-002 liveness groups: Working = sky pulse (T3 pill), Waiting = amber Shield */
+      /* TC-002 liveness groups: Working = sky spin (arc loader), Waiting = amber Shield */
       ".dna-arow.dna-lv-work .dna-slot, .dna-arow.dna-lv-work .dna-tick { color: #4da3ff; }",
-      ".dna-arow.dna-lv-work .dna-slot { animation: dna-pulse 2s ease-in-out infinite; }",
+      ".dna-arow.dna-lv-work .dna-slot svg { animation: dna-spin 1.2s linear infinite; transform-origin: 50% 50%; }",
       ".dna-arow.dna-lv-wait .dna-slot, .dna-arow.dna-lv-wait .dna-t { color: var(--dna-warn-text); }",
       ".dna-tick { font-variant-numeric: tabular-nums; }",
-      "@keyframes dna-pulse { 50% { opacity: .45; } }",
+      "@keyframes dna-spin { to { transform: rotate(360deg); } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
-  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } }",
+  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } }",
       /* TC-003 unseen-completion: seen done rows dim, unseen stay bright + '!' badge */
       ".dna-arow.dna-dim { opacity: .55; }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
@@ -324,7 +324,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states16-i18n";
+    var DNA_BUILD = "states17-spin";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
