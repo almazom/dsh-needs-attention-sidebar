@@ -23,6 +23,7 @@
 | 忽略与撤销 | 长列表 `+2 more` 截断 | 折叠态 |
 |---|---|---|
 | ![忽略提示与撤销按钮](screenshots/sidebar-toast.png) | ![行数上限显示加二更多](screenshots/sidebar-more.png) | ![折叠为单行头部](screenshots/sidebar-collapsed.png) |
+| ![浅色主题下的同一块面板](screenshots/sidebar-attention-light.png) | | 同一块面板，浅色配色 |
 
 ## 想法
 

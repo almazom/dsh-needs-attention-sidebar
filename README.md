@@ -23,6 +23,7 @@ Zero core edits: everything is a plugin — a server-side scan route plus a smal
 | Dismiss with undo | Long list, `+2 more` cap | Collapsed |
 |---|---|---|
 | ![Dismiss toast with undo](screenshots/sidebar-toast.png) | ![Row cap with plus-two-more](screenshots/sidebar-more.png) | ![Collapsed to one header row](screenshots/sidebar-collapsed.png) |
+| ![Light theme, same block](screenshots/sidebar-attention-light.png) | | Same block in the light scheme |
 
 ## The idea
 
