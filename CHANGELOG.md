@@ -3,6 +3,21 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.4.0-alpha.1] - 2026-11-09
+
+### In plain words (dev channel — try the new controls, expect rough edges)
+- A new **eye icon** in the sidebar section header (next to search / settings) hides the whole session list; the header label keeps a count ("Workspaces · 13") so you always know how much is hidden. Click again to show.
+- The **"More" row in the left navigation** got a small chevron: click it to fold the nav stack (Plugins / Automation / Duty disappear, More stays as the restore control).
+- Both states survive a page reload and are fully undoable — nothing is lost.
+- Chinese hosts get localized tooltips; the detection of the nav row works in both EN and 中文.
+
+### Upgrading
+This is a pre-release on the `dev` branch. Install from the branch:
+```
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
+```
+Or wait for the stable v0.4.0 — nothing here is required.
+
 ## [0.3.0] - 2026-11-07
 
 ### In plain words
