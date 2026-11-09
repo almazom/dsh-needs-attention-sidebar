@@ -107,7 +107,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /var DNA_BUILD = "states20-toast"/); /* F11: marker bumped with the Working-tab click fix; states16-i18n = TC-001 locale table */
+  assert.match(clientSrc, /var DNA_BUILD = "states21-focusplus"/); /* F11: marker bumped with the Working-tab click fix; states21-focusplus = TC-010/011 eye+fold */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -120,7 +120,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.ok(fi > -1 && li > -1 && fi < li, "TC-011: Failed group must render ABOVE Look (operator m02960, TC-014 Attention = warnings only)");
   /* TC-001 i18n: locale table + zh detection + data-dna-zh hook */
   assert.match(clientSrc, /var I18N = \{/);
-  assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(text\) \? "zh" : "en"\)/);
+  assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(base\) \? "zh" : "en"\)/); /* TC-010: base (cue-suffix-stripped) */
   assert.match(clientSrc, /slice\(0, 40\)/, "toast title pinned");
   assert.match(clientSrc, /dna-spin 1\.2s linear infinite/, "spin pinned");
   assert.match(clientSrc, /prefers-reduced-motion[^}]*animation:\s*none/, "reduced-motion kills animation");
@@ -219,4 +219,21 @@ test("TC-005 AC4: dismiss first-click — source pins (in-place removal, batched
   assert.match(clientSrc, /function scheduleRender\(\)/);
   assert.match(clientSrc, /clearTimeout\(renderTimer\)/); /* dispose */
   assert.match(clientSrc, /width:22px; height:22px/);
+});
+
+test("TC-010/011: focus features — eye + nav fold source pins", () => {
+  assert.match(clientSrc, /var DNA_BUILD = "states21-focusplus"/);
+  assert.match(clientSrc, /var LS_SESSIONS_HIDDEN = "dsh-needs-attention\.sessionsHidden"/);
+  assert.match(clientSrc, /var LS_MORE_FOLDED = "dsh-needs-attention\.moreCollapsed"/);
+  assert.match(clientSrc, /data-dna-eye/); /* eye injected into host headerActions */
+  assert.match(clientSrc, /data-dna-foldchev/); /* chevron span inside host More row */
+  assert.match(clientSrc, /eyeHide: "Hide session list", eyeShow: "Show session list"/);
+  assert.match(clientSrc, /eyeHide: "隐藏会话列表", eyeShow: "显示会话列表"/);
+  /* F1 label cue tolerated by anchor match: base = text minus " · N" suffix */
+  assert.match(clientSrc, /text\.replace\(\/\\s\*·\\s\*\\d\+\\s\*\$\/, ""\)/);
+  /* host-exact icon tokens (live-measured: 16px box, stroke-width 1) */
+  assert.match(clientSrc, /EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"/);
+  /* fold chevron ≤150ms transition, killed under reduced motion */
+  assert.match(clientSrc, /\.dna-foldchev svg \{ transition: transform \.15s ease; \}/);
+  assert.match(clientSrc, /reduced-motion: reduce[^@]*dna-foldchev svg \{ transition: none; \} \}/); /* crosses inner {} blocks */
 });

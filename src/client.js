@@ -65,6 +65,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     var SHIELD_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>';
     var UNDO_ICON = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 7.2h6.1a3.4 3.4 0 1 1 0 6.8H7.4"/><path d="M6.7 4.5 4.1 7.2l2.6 2.6"/></svg>';
     var CHEV_ICON = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.4 8 9.4l3-3"/></svg>';
+    /* F1/F2 host-injection icons — host-exact tokens (live-measured 2026-11-09: 16px box, stroke-width 1) */
+    var EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8C3.2 4.9 5.4 3.2 8 3.2s4.8 1.7 6.5 4.8C12.8 11.1 10.6 12.8 8 12.8S3.2 11.1 1.5 8Z"/><circle cx="8" cy="8" r="2"/></svg>';
+    var EYE_OFF16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8C3.2 4.9 5.4 3.2 8 3.2s4.8 1.7 6.5 4.8C12.8 11.1 10.6 12.8 8 12.8S3.2 11.1 1.5 8Z"/><path d="M2.8 13.2 13.2 2.8"/></svg>';
+    var FOLD_CHEV16 = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.4 6.2 8 9.8l3.6-3.6"/></svg>';
     var LVL = {
       fatal: { cls: "dna-lv-red", icon: ERR_ICON, word: "lvlFatal" },
       limit: { cls: "dna-lv-amber", icon: WARN_ICON, word: "lvlLimit" },
@@ -89,6 +93,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         less: "show less",
         grpFailed: "Failed", grpLook: "Look", grpWait: "Waiting",
         dismissed: "dismissed — ", undo: "Undo",
+        eyeHide: "Hide session list", eyeShow: "Show session list",
+        navFold: "Collapse navigation", navUnfold: "Expand navigation",
         openFailId: "cannot open this session id", openFail: "cannot open this session",
         opening: "opening ", tail: "…",
         lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
@@ -105,6 +111,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         less: "收起",
         grpFailed: "失败", grpLook: "需查看", grpWait: "等待",
         dismissed: "已忽略 — ", undo: "撤销",
+        eyeHide: "隐藏会话列表", eyeShow: "显示会话列表",
+        navFold: "折叠导航", navUnfold: "展开导航",
         openFailId: "无法打开该会话 ID", openFail: "无法打开此会话",
         opening: "正在打开 ", tail: "…",
         lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
@@ -174,7 +182,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-tick { font-variant-numeric: tabular-nums; }",
       "@keyframes dna-spin { to { transform: rotate(360deg); } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
-  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } }",
+  /* F1/F2 host-injected controls */
+  "[data-dna-eye] { display:inline-flex; align-items:center; }",
+  "[data-dna-eye][aria-expanded='false'] { opacity:.55; }",
+  ".dna-foldchev { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; border-radius:6px; color:inherit; cursor:pointer; opacity:.6; }",
+  ".dna-foldchev:hover { opacity:1; }",
+  ".dna-foldchev svg { transition: transform .15s ease; }",
+  ".dna-foldchev[data-dna-folded='1'] svg { transform: rotate(-90deg); }",
+  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot svg { animation: none; } .dna-foldchev svg { transition: none; } }",
       /* TC-003 unseen-completion: seen done rows dim, unseen stay bright + '!' badge */
       ".dna-arow.dna-dim { opacity: .55; }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
@@ -307,9 +322,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var labelled = null, structural = null;
       for (var i = 0; i < labels.length; i++) {
         var text = (labels[i].textContent || "").trim();
+        var base = text.replace(/\s*·\s*\d+\s*$/, ""); /* F1 count cue tolerated on the label */
         var header = labels[i].closest('[class*="_sectionHeader"]') || labels[i].parentElement;
         if (!header) continue;
-        if (SECTION_LABELS.indexOf(text) !== -1) { setLocale(/[一-鿿]/.test(text) ? "zh" : "en"); return { el: header, how: "label:" + text }; }
+        if (SECTION_LABELS.indexOf(base) !== -1) { setLocale(/[一-鿿]/.test(base) ? "zh" : "en"); return { el: header, how: "label:" + base }; }
         if (!labelled && text) labelled = { el: header, how: "sectionLabel:" + text };
       }
       if (labelled) return labelled;
@@ -328,7 +344,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states20-toast";
+    var DNA_BUILD = "states21-focusplus";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -412,9 +428,96 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       try { localStorage.setItem(LS_TAB, sTab); } catch (e) {}
       render(true);
     }
+    /* F1 + F2 (operator 2026-11-09; TC-010/TC-011; judge-selected variants from the
+       stereo prototype): an eye button in the host section header hides the session
+       list (label cue "… · N" carries the hidden count); a chevron on the host "More"
+       nav row folds the nav stack (More stays as the restore control). Both persist in
+       localStorage and RE-APPLY on every render because the host re-renders React
+       subtrees and would drop injected attributes/nodes otherwise. */
+    var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
+    var LS_MORE_FOLDED = "dsh-needs-attention.moreCollapsed";
+    function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
+    function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
+    function sessionEyeApply(header) {
+      if (!header || !header.querySelector) return;
+      var actions = header.querySelector('[class*="_headerActions"]');
+      var list = header.parentElement && (header.parentElement.querySelector('[class*="_listArea"]') || header.nextElementSibling);
+      var label = header.querySelector('[class*="_sectionLabel"]');
+      if (!actions || !list || !label) return;
+      var eye = actions.querySelector("[data-dna-eye]");
+      if (!eye) {
+        eye = document.createElement("button");
+        eye.type = "button";
+        eye.setAttribute("data-dna-eye", "1");
+        var proto = actions.querySelector('button[class*="_iconButton"]');
+        if (proto) eye.className = proto.className; /* host-exact look */
+        eye.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          lsMark(LS_SESSIONS_HIDDEN, !lsOn(LS_SESSIONS_HIDDEN));
+          sessionEyeApply(header);
+        });
+        actions.appendChild(eye);
+      }
+      var hidden = lsOn(LS_SESSIONS_HIDDEN);
+      if (!label.getAttribute("data-dna-base")) label.setAttribute("data-dna-base", (label.textContent || "").trim());
+      var baseTxt = label.getAttribute("data-dna-base");
+      var n = list.querySelectorAll('[class*="_sessionRow"],[class*="_projectRow"]').length;
+      eye.setAttribute("aria-expanded", hidden ? "false" : "true");
+      eye.title = hidden ? T.eyeShow : T.eyeHide;
+      eye.setAttribute("aria-label", eye.title);
+      eye.innerHTML = hidden ? EYE_OFF16 : EYE_OPEN16;
+      list.style.display = hidden ? "none" : "";
+      label.textContent = hidden ? baseTxt + " · " + n : baseTxt;
+    }
+    function navFoldApply() {
+      var nav = document.querySelector('[class*="_panelList"]');
+      if (!nav) return;
+      var rows = nav.querySelectorAll("button");
+      var moreRow = null, i;
+      for (i = 0; i < rows.length; i++) {
+        var t = (rows[i].textContent || "").trim();
+        if (rows[i].getAttribute("aria-label") === "More" || t === "More") { moreRow = rows[i]; break; }
+      }
+      if (!moreRow) return;
+      var chev = moreRow.querySelector("[data-dna-foldchev]");
+      if (!chev) {
+        chev = document.createElement("span"); /* span, not button: the row itself is a <button> */
+        chev.className = "dna-foldchev";
+        chev.setAttribute("data-dna-foldchev", "1");
+        chev.setAttribute("role", "button");
+        chev.setAttribute("tabindex", "0");
+        chev.innerHTML = FOLD_CHEV16;
+        chev.addEventListener("click", function (ev) {
+          ev.stopPropagation(); ev.preventDefault();
+          lsMark(LS_MORE_FOLDED, !lsOn(LS_MORE_FOLDED));
+          navFoldApply();
+        });
+        chev.addEventListener("keydown", function (ev) {
+          if (ev.key !== "Enter" && ev.key !== " ") return;
+          ev.stopPropagation(); ev.preventDefault();
+          lsMark(LS_MORE_FOLDED, !lsOn(LS_MORE_FOLDED));
+          navFoldApply();
+        });
+        moreRow.appendChild(chev);
+      }
+      var folded = lsOn(LS_MORE_FOLDED);
+      chev.setAttribute("data-dna-folded", folded ? "1" : "0");
+      chev.title = folded ? T.navUnfold : T.navFold;
+      chev.setAttribute("aria-label", chev.title);
+      chev.setAttribute("aria-expanded", folded ? "false" : "true");
+      var all = nav.querySelectorAll("button");
+      for (i = 0; i < all.length; i++) { if (all[i] !== moreRow) all[i].style.display = folded ? "none" : ""; }
+      var ns = document.querySelector('button[class*="_newSession"]');
+      if (ns) ns.style.display = folded ? "none" : "";
+    }
+    function focusFeatures(anchor) {
+      try { if (anchor && anchor.el) sessionEyeApply(anchor.el); } catch (e) {}
+      try { navFoldApply(); } catch (e) {}
+    }
     function render(force) {
       ensureCss();
       var anchor = findAnchor();
+      focusFeatures(anchor); /* TC-010/011: idempotent re-apply, independent of block emptiness */
       if (!anchor || !anchor.el) {
         setStatus({ anchor: null, block: !!document.querySelector("[data-dna-block]"), rows: rows.length, states: stateRows.length, err: "no-anchor" });
         return; /* never a wrong slot */
