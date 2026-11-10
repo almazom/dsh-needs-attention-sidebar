@@ -13,9 +13,9 @@
  *     20 s response throttle + single-flight + bounded concurrency (G4 warm <=200ms).
  *   - failures are never silent: unreadable logs surface as `degraded` (review P2-3).
  */
-import { readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { spawn } from "node:child_process";
 import { createInterface } from "node:readline";
 
@@ -249,9 +249,21 @@ export async function scanSessions({ now = Date.now() } = {}) {
   return inFlight;
 }
 
+/* Sessions the host has archived never render in the sidebar (workspace.json
+   archivedSessionIds), so a Focus row for one could never be opened — clicking it
+   always dead-ended ("cannot open this session", operator report 2026-11-10).
+   Drop them at candidate time; best-effort: unreadable registry = no filtering. */
+function archivedSet() {
+  try {
+    const reg = JSON.parse(readFileSync(join(dirname(logRoot()), "storages", "workspace.json"), "utf8"));
+    return new Set(reg?.global?.archivedSessionIds || []);
+  } catch { return new Set(); }
+}
+
 async function doScan(now) {
   const root = logRoot();
   const cutoff = now - WINDOW_H * 3_600_000;
+  const archived = archivedSet();
   const cands = [];
   let stores = [];
   let rootOk = true;
@@ -270,6 +282,7 @@ async function doScan(now) {
       let st;
       try { st = statSync(file); } catch { continue; }
       if (st.mtimeMs < cutoff) continue; // freshness window (review P2-4)
+      if (archived.has(dir)) continue; // host-archived: no sidebar row exists, row would be dead
       cands.push({ id: dir, path: file, mtimeMs: st.mtimeMs, size: st.size, ws: ws });
     }
   }
