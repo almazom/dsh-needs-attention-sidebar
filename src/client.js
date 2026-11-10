@@ -347,7 +347,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states33-openovf";
+    var DNA_BUILD = "states34-openwalk";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -688,7 +688,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
          Slug matching is suffix-based: slug "--Users-…-temp--" ends with host title
          "temp"; "…-default-workspace--" ends with "Default workspace". If the group
          then hides the row behind "Show N more sessions", the overflow row is clicked
-         once too (2026-11-10 live probe). */
+         the group paginates instead — each click on "Show N more sessions" reveals
+         5 more rows (measured 2026-11-10: 54 -> 49) — so the poll walks it. */
       var want = normWs(ws);
       if (want) {
         var wr = document.querySelectorAll('[data-row-key^="workspace:"]');
@@ -699,19 +700,17 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
             wr[i].click();
             toast(T.opening + id8(sid) + T.tail, false);
             var ovfKey = matchedWsKey.slice(10); /* "workspace:<uuid>" -> "<uuid>" */
-            var ovfClicked = false;
+            var ovfClicks = 0;
             var t0 = Date.now();
             (function poll() {
               var row = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
               if (row) { row.click(); return; }
-              /* the group may render "Show 54 more sessions" instead of the target row —
-                 click that overflow row once; the next tick finds the session. */
-              if (!ovfClicked) {
+              /* paginate: each overflow click reveals 5 more rows of the group */
+              if (ovfClicks < 12 && Date.now() - t0 < 6000) {
                 var ovf = document.querySelector('[data-row-key="overflow:' + cssEsc(ovfKey) + '"]');
-                if (ovf) { ovfClicked = true; ovf.click(); }
-              }
-              if (Date.now() - t0 < 4000) setTimeout(poll, 120);
-              else toast(T.openFail, false);
+                if (ovf) { ovfClicks += 1; ovf.click(); }
+                setTimeout(poll, 450);
+              } else toast(T.openFail, false);
             })();
             return;
           }
