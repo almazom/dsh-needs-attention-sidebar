@@ -3,6 +3,21 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.4.0-beta.3] — 2026-11-10 — rows really open sessions (same fix as v0.3.4)
+
+### In plain words
+Clicking a row in the Focus block now opens the session for real — even when
+the session lives in another workspace (the plugin switches the workspace,
+unfolds the paged list, then opens the row). Sessions the host has archived no
+longer appear as dead rows. Same fixes as v0.3.4 on the stable line, plus the
+beta feature set (hide-sessions eye, Duty-gated fold).
+
+### Technically
+- src/client.js: openSession rewritten (workspace activate -> pagination burst
+  -> row click; deep-link write removed); DNA_BUILD states36-openfull
+- src/scanner.mjs: archived-session filter (workspace.json archivedSessionIds)
+- tests: 46/46
+
 ## [0.4.0-beta.2] — 2026-11-09 — beta.1 + design restored to the demo look
 
 ### In plain words
