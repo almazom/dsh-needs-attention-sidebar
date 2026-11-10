@@ -347,7 +347,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states35-openburst";
+    var DNA_BUILD = "states36-openfull";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -700,16 +700,20 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
             wr[i].click();
             toast(T.opening + id8(sid) + T.tail, false);
             var ovfKey = matchedWsKey.slice(10); /* "workspace:<uuid>" -> "<uuid>" */
+            var ovfMisses = 0;
             var t0 = Date.now();
             (function attempt() {
               var row = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
               if (row) { row.click(); return; }
-              if (Date.now() - t0 >= 6000) { toast(T.openFail, false); return; }
+              if (Date.now() - t0 >= 10000) { toast(T.openFail, false); return; }
               /* burst-expand the group's "Show N more sessions" — each click reveals 5 rows,
                  and the host resets pagination on its own data refreshes (~2s cadence,
-                 measured 2026-11-10), so the walk has to outrun the next reset. */
+                 measured 2026-11-10), so the walk has to outrun the next reset. When the
+                 group is fully revealed and the row is still absent, the session's dir is a
+                 dead workspace (deleted/recreated on the host side) — fail honestly. */
               var ovf = document.querySelector('[data-row-key="overflow:' + cssEsc(ovfKey) + '"]');
-              if (ovf) { ovf.click(); setTimeout(attempt, 140); }
+              if (ovf) { ovfMisses = 0; ovf.click(); setTimeout(attempt, 140); }
+              else if (++ovfMisses >= 2) { toast(T.openFail, false); return; }
               else setTimeout(attempt, 300);
             })();
             return;
