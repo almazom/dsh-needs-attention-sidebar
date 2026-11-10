@@ -3,6 +3,18 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.3.5] — 2026-11-10 — safe downgrade from the beta channel
+
+### In plain words
+If you tried the dev channel (the hide-sessions eye), your session list stayed
+hidden when coming back to the stable version — and stable has no eye to bring
+it back. Now the stable version clears that leftover state on load, so the
+session list is always visible here.
+
+### Technically
+- src/client.js: boot-time removal of the beta-only localStorage keys
+  (sessionsHidden, moreCollapsed); DNA_BUILD states26-clean
+
 ## [0.3.4] — 2026-11-10 — clicking a Focus row now really opens the session
 
 ### In plain words

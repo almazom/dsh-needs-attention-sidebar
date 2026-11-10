@@ -50,6 +50,14 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       try { return new URL(ROUTE_REL, document.baseURI).href; } catch (e) { return "/" + ROUTE_REL; }
     }
     var LS_DISMISSED = "dsh-needs-attention.dismissed";
+    /* Beta-downgrade safety: the 0.4.x dev channel persists hide-sessions (eye)
+       and More-fold state in localStorage. This stable line implements neither,
+       so a user downgrading from beta would keep a hidden session list with no
+       restore control. Clear the beta-only keys once per boot (best-effort). */
+    try {
+      localStorage.removeItem("dsh-needs-attention.sessionsHidden");
+      localStorage.removeItem("dsh-needs-attention.moreCollapsed");
+    } catch (e) {}
     var LS_COLLAPSED = "dsh-needs-attention.collapsed";
     var LS_EXPANDED = "dsh-needs-attention.expanded";
     var LS_LASTVISIT = "dsh.na.lastVisit";
@@ -331,7 +339,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states25-openws";
+    var DNA_BUILD = "states26-clean";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
