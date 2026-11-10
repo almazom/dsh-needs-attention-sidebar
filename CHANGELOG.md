@@ -3,6 +3,35 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.3.4] — 2026-11-10 — clicking a Focus row now really opens the session
+
+### In plain words
+Rows in the Focus block are clickable again. The old "open" attempt relied on a
+deep-link the host ignores, so nothing happened. Now the plugin activates the
+session's workspace in the sidebar, unfolds the list if the host has it paged,
+and clicks the row — even for sessions that live in another workspace. Rows for
+sessions the host has archived are no longer shown at all: the host never
+renders them, so they were dead entries that could only end in "cannot open".
+
+### Technically
+- src/client.js: openSession rewritten — native row click first; fallback
+  activates the session's workspace (suffix-matched slug), burst-expands the
+  paginator to outrun host list resets, then clicks the revealed row; the
+  localStorage deep-link write is removed (host never consumed it);
+  data-dna-ws rides every row; DNA_BUILD states25-openws
+- src/scanner.mjs: candidates dropped when the id is in the host's
+  workspace.json archivedSessionIds (best-effort read)
+- tests: TC-013 source pins, 45/45
+
+### Check
+- [ ] Click a Working/Attention/Finished row -> the session page opens
+- [ ] A row from another workspace still opens (workspace switches first)
+- [ ] Archived sessions do not appear as rows
+
+### Known limitations
+- If the session's workspace was deleted from disk, the row fails honestly
+  with "cannot open this session" after a 10 s search.
+
 ## [0.3.3] — 2026-11-09 — design restored to the demo look
 
 ### In plain words
