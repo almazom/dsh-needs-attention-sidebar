@@ -347,7 +347,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states34-openwalk";
+    var DNA_BUILD = "states35-openburst";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -700,17 +700,17 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
             wr[i].click();
             toast(T.opening + id8(sid) + T.tail, false);
             var ovfKey = matchedWsKey.slice(10); /* "workspace:<uuid>" -> "<uuid>" */
-            var ovfClicks = 0;
             var t0 = Date.now();
-            (function poll() {
+            (function attempt() {
               var row = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
               if (row) { row.click(); return; }
-              /* paginate: each overflow click reveals 5 more rows of the group */
-              if (ovfClicks < 12 && Date.now() - t0 < 6000) {
-                var ovf = document.querySelector('[data-row-key="overflow:' + cssEsc(ovfKey) + '"]');
-                if (ovf) { ovfClicks += 1; ovf.click(); }
-                setTimeout(poll, 450);
-              } else toast(T.openFail, false);
+              if (Date.now() - t0 >= 6000) { toast(T.openFail, false); return; }
+              /* burst-expand the group's "Show N more sessions" — each click reveals 5 rows,
+                 and the host resets pagination on its own data refreshes (~2s cadence,
+                 measured 2026-11-10), so the walk has to outrun the next reset. */
+              var ovf = document.querySelector('[data-row-key="overflow:' + cssEsc(ovfKey) + '"]');
+              if (ovf) { ovf.click(); setTimeout(attempt, 140); }
+              else setTimeout(attempt, 300);
             })();
             return;
           }
