@@ -68,10 +68,18 @@ dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 
 就这样。该命令把包装进 profile；因为包声明了 `dsh.bundle.patch`，DSH 会自动注册插件的 cordis 补丁。重启 Web 车道（或刷新页面），**Focus** 区块就出现在 *Workspaces* 上方。
 
+什么都没出现？这是设计如此 —— 只有需要你注意的时候，区块才会出现。
+
 包发布到 npm 之后，也可以用包名安装（效果相同）：
 
 ```bash
 dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
+```
+
+尝鲜通道（预发布）：`#dev` 分支比稳定版更早一步（当前：隐藏会话列表的眼睛按钮、导航折叠）。可能有毛边；上面的普通地址永远指向稳定版。
+
+```bash
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
 ```
 
 无构建步骤、无生命周期脚本、纯 JavaScript —— 安装时什么都不执行。
@@ -108,6 +116,20 @@ dsh plugin --profile web add @almazom/dsh-needs-attention-sidebar
 - `×` 关掉某一行（跨刷新保留，带 **撤销** toast）。
 - 每个标签、分组和行都有键盘焦点和 ARIA 标签；不用鼠标也能完成同样操作。
 - 行多到放不下时，分组内部滚动并有 `+N more` 上限（每个列表最多 20 行 —— 扫描器拒绝在倒霉的一天把你的侧边栏炸掉）。
+
+### 隐藏会话列表（眼睛图标）
+
+**Workspaces** 标题行的第四个图标是一只眼睛。点击它，整个会话列表收起 ——
+标题保留，并显示为 `Workspaces · N`，让你知道还有多少会话在等。再点一次
+（或聚焦后按 `Enter` / `Space`）列表回到原位。选择跨刷新保留；图标本身反映
+状态（睁眼 = 列表显示，闭眼 = 列表隐藏）。
+
+### 折叠侧边导航
+
+如果侧边栏有 **Duty** 行，它的右缘会出现一个小箭头。点击后导航行
+（Plugins / Automation tasks / Duty）收起，腾出纵向空间；再点展开。
+没有 Duty 行就没有箭头：在不使用 Duty 的机器上该功能自动退场。折叠只在
+当前页面生效：刷新页面后导航恢复原样。
 
 ### 扫描器眼中的「近期」
 
@@ -165,7 +187,7 @@ window.__DNA_STATUS__ 诊断               → 脱敏标题 → 行（≤20）�
 
 ```bash
 npm install        # 仅开发需要：无需构建，纯 JS
-npm test           # 44 个测试（node:test）—— 扫描器、路由、客户端、接线
+npm test           # 46 个测试（node:test）—— 扫描器、路由、客户端、接线
 ```
 
 ```

@@ -107,9 +107,7 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.match(clientSrc, /unseenDiv: "since your last visit"/); /* TC-001: divider lives in the locale table now */
   assert.match(clientSrc, /dsh\.na\.lastVisit/);
   assert.match(clientSrc, /aria-live", "polite"/);
-  assert.match(clientSrc, /removeItem\("dsh-needs-attention\.sessionsHidden"\)/); /* beta-downgrade safety: stable clears beta-only toggle keys */
-  assert.match(clientSrc, /var DNA_BUILD = "states26-clean"/); /* states25-openws = workspace-activate fallback for openSession */
-  assert.match(clientSrc, /\[class\*=\"_rail\"\] \[data-dna-block\]/); /* rail cleanup: block hidden by host rail classes */
+  assert.match(clientSrc, /var DNA_BUILD = "states36-openfull"/); /* states36-openfull = workspace-activate + overflow-expand fallback */
   assert.match(clientSrc, /t !== "look" && t !== "work" && t !== "done"/); /* TC-016: switchTab whitelist accepts "work" — TC-014 added the tab but missed the whitelist */
   assert.match(clientSrc, /\.dna-tab-fin \{ flex:1\.4; \}/); /* TC-015 P3a: Finished-tab width is a class, not an inline style */
   assert.doesNotMatch(clientSrc, /style="flex:1\.4"/); /* TC-015 P3a: inline style removed */
@@ -122,10 +120,10 @@ test("TC-005 AC8: client renders the two-tab block per approved prototype v3", (
   assert.ok(fi > -1 && li > -1 && fi < li, "TC-011: Failed group must render ABOVE Look (operator m02960, TC-014 Attention = warnings only)");
   /* TC-001 i18n: locale table + zh detection + data-dna-zh hook */
   assert.match(clientSrc, /var I18N = \{/);
-  assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(text\) \? "zh" : "en"\)/);
+  assert.match(clientSrc, /setLocale\(\/\[一-鿿\]\/\.test\(base\) \? "zh" : "en"\)/); /* TC-010: base (cue-suffix-stripped) */
   assert.match(clientSrc, /slice\(0, 40\)/, "toast title pinned");
   assert.match(clientSrc, /dna-pulse 2s ease-in-out infinite/, "working marker: gentle opacity pulse (demo.gif design)");
-  assert.ok(!clientSrc.includes("1199.98"), "no viewport MQ: Focus label must never be hidden by width");
+  assert.ok(!clientSrc.includes("1199.98"), "no viewport MQ: Focus label must never be hidden by width — rail handled by _rail class");
   assert.ok(!clientSrc.includes("opacity:.35"), "dismiss x hidden until hover (demo.gif design)");
   assert.match(clientSrc, /prefers-reduced-motion[^}]*animation:\s*none/, "reduced-motion kills animation");
   assert.match(clientSrc, /data-dna-zh/);
@@ -230,10 +228,35 @@ test("TC-013 (2026-11-09): openSession workspace-activate fallback — source pi
   assert.match(clientSrc, /data-dna-ws="' \+ esc\(s\.ws \|\| ""\)/); /* state + live rows too */
   assert.match(clientSrc, /function normWs\(v\)/); /* slug\/title normalizer */
   assert.match(clientSrc, /want\.slice\(-hn\.length\) === hn/); /* suffix match: slug ends with host workspace title */
+  assert.match(clientSrc, /overflow:' \+ cssEsc\(ovfKey\)/); /* 2026-11-10: expand "Show N more sessions" once */
   assert.match(clientSrc, /the old deep-link fallback \(dsh\.sessions\.current \+ reload\) is a/);
   assert.ok(!clientSrc.includes('localStorage.setItem("dsh.sessions.current"')); /* dead write removed — host never consumes it */
   assert.ok(!/SESSION_ID_RE/.test(clientSrc)); /* id-gate retired with the deep-link path */
   assert.match(clientSrc, /openSession\(row\.getAttribute\("data-dna-id"\), row\.getAttribute\("data-dna-ws"\)\)/);
 });
 
-
+test("TC-010/011: focus features — eye + nav fold source pins", () => {
+  assert.match(clientSrc, /var DNA_BUILD = "states36-openfull"/);
+  assert.match(clientSrc, /\[class\*=\"_rail\"\] \[data-dna-block\]/); /* rail cleanup: block+eye+chev hidden by host rail classes */
+  assert.match(clientSrc, /data-since="' \+ esc\(s\.at\)/); /* security P3-1: the tick attribute goes through esc() like every other interpolation */
+  assert.match(clientSrc, /var LS_SESSIONS_HIDDEN = "dsh-needs-attention\.sessionsHidden"/);
+  assert.match(clientSrc, /var moreHidden = false/); /* per-page flag: reload restores the More row */
+  assert.match(clientSrc, /data-dna-eye/); /* eye injected into host headerActions */
+  assert.match(clientSrc, /data-dna-foldchev/); /* chevron span inside host More row */
+  assert.match(clientSrc, /the fold feature exists only when a Duty row/); /* universal gate: no Duty -> no chevron, native More untouched */
+  assert.match(clientSrc, /eyeHide: "Hide session list", eyeShow: "Show session list"/);
+  assert.match(clientSrc, /eyeHide: "隐藏会话列表", eyeShow: "显示会话列表"/);
+  /* F1 label cue tolerated by anchor match: base = text minus " · N" suffix */
+  assert.match(clientSrc, /text\.replace\(\/\\s\*·\\s\*\\d\+\\s\*\$\/, ""\)/);
+  /* host-exact icon tokens (live-measured: 16px box, stroke-width 1) */
+  assert.match(clientSrc, /EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"/);
+  /* review round: bilingual More detection + write-guards + no-nav-loss restore pass */
+  assert.match(clientSrc, /var MORE_TOKENS = \["More", "更多"\]/);
+  assert.match(clientSrc, /max-width:60px/); /* actions row cap must be lifted inline — clipping regression */
+  assert.match(clientSrc, /React re-renders wipe our injected controls/); /* observer re-apply — React wipes foreign nodes */
+  assert.match(clientSrc, /__dnaIco/); /* identical writes guarded — MutationObserver loop */
+  assert.match(clientSrc, /never leave the nav hidden without its restore control/);
+  /* fold chevron ≤150ms transition, killed under reduced motion */
+  assert.match(clientSrc, /\.dna-foldchev svg \{ transition: transform \.15s ease; \}/);
+  assert.match(clientSrc, /reduced-motion: reduce[^@]*dna-foldchev svg \{ transition: none; \} \}/); /* crosses inner {} blocks */
+});

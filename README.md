@@ -64,6 +64,8 @@ dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar
 
 That's it. The command installs the package into the profile, and because the package declares `dsh.bundle.patch`, DSH auto-registers the plugin's cordis patch. Restart the web lane (or reload the page) and the **Focus** block appears above *Workspaces*.
 
+Nothing appears? That is the design — the block shows itself only when something needs your attention.
+
 Once the package is also published to npm, the package name works as an alternative:
 
 ```bash
@@ -83,6 +85,12 @@ No build step, no lifecycle scripts, plain JavaScript — nothing runs on instal
 | **5.** The plugin shows up under **Installed plugins** — and the **Focus** block is live in your sidebar. | ![Step 5 — listed under Installed plugins](screenshots/install-step-5.png) |
 
 (All five shots are from a real install on a clean DSH `0.2.1-rc.3` instance — what you see is what you get.)
+
+**Dev channel (pre-release):** the `#dev` branch carries the next version ahead of stable. Expect rough edges; the plain address above always points at the stable build.
+
+```bash
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
+```
 
 ## Upgrading
 
@@ -107,6 +115,22 @@ Install over the same URL (Plugins → Add plugin → paste the GitHub address, 
 
 - `×` dismisses a row (kept across reloads, with an **Undo** toast).
 - Every tab, group and row has keyboard focus and ARIA labels; the same actions work without a mouse.
+
+### Hide the session list (eye)
+
+The fourth icon in the **Workspaces** header is an eye. Click it and the whole
+session list folds away — the header stays, now reading `Workspaces · N` so you
+know how many sessions are waiting. Click again (or press `Enter`/`Space` when
+focused) to bring the list back. The choice persists across reloads; the icon
+reflects the state (open eye = list shown, crossed eye = list hidden).
+
+### Fold the side navigation
+
+If your sidebar has a **Duty** row, a small chevron appears at its right edge.
+Click it and the navigation rows (Plugins / Automation tasks / Duty) fold away
+to free vertical space; click again to unfold. No Duty row — no chevron: the
+feature stays out of the way on machines that don't use Duty. The fold is
+session-only: a page reload restores the navigation.
 - If more rows exist than fit, the group scrolls with a `+N more` cap (20 rows max per list — the scanner refuses to blow up your sidebar on a bad day).
 
 ### What the scanner considers "recent"
@@ -165,7 +189,7 @@ The client carries a strip-states guard: paired with an older server build it fa
 
 ```bash
 npm install        # dev only: nothing to build, plain JS
-npm test           # 44 tests (node:test) — scanner, host route, client, wiring
+npm test           # 46 tests (node:test) — scanner, host route, client, wiring
 ```
 
 ```

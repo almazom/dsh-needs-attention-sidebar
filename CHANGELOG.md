@@ -3,6 +3,24 @@
 All notable changes to this project are documented in this file.
 Format: Keep a Changelog; versioning: SemVer.
 
+## [0.4.0] — 2026-11-10 — hide-sessions eye and nav fold, for everyone
+
+### In plain words
+The two features that lived on the dev channel are now part of the stable
+plugin. A fourth icon in the **Workspaces** header — an eye — hides the whole
+session list (the header stays and shows `Workspaces · N`). If your sidebar
+has a Duty row, a small chevron at its edge folds the navigation rows away to
+free vertical space. And clicking a Focus row opens the session for real —
+even when it lives in another workspace.
+
+### Technically
+- eye: host-exact icon in the section header, aria-expanded, persisted
+  (`dsh-needs-attention.sessionsHidden`); fold: Duty-gated chevron inside the
+  More row, session-only (reload restores); host-archived sessions are dropped
+  from the block entirely; openSession = workspace activate → pagination
+  burst → row click, 10 s budget with an honest fail
+- merged from the 0.4.0-beta.1…beta.3 line; 46 tests
+
 ## [0.3.5] — 2026-11-10 — safe downgrade from the beta channel
 
 ### In plain words
@@ -84,6 +102,65 @@ label on any window size — including zoomed ones where it used to vanish.
 ### In plain words
 
 - Готовые строки больше не блекнут после просмотра — все «Done» строки яркие, как на картинках в README. Непросмотренные по-прежнему помечены зелёным `!`.
+## [0.4.0-beta.3] — 2026-11-10 — rows really open sessions (same fix as v0.3.4)
+
+### In plain words
+Clicking a row in the Focus block now opens the session for real — even when
+the session lives in another workspace (the plugin switches the workspace,
+unfolds the paged list, then opens the row). Sessions the host has archived no
+longer appear as dead rows. Same fixes as v0.3.4 on the stable line, plus the
+beta feature set (hide-sessions eye, Duty-gated fold).
+
+### Technically
+- src/client.js: openSession rewritten (workspace activate -> pagination burst
+  -> row click; deep-link write removed); DNA_BUILD states36-openfull
+- src/scanner.mjs: archived-session filter (workspace.json archivedSessionIds)
+- tests: 46/46
+
+## [0.4.0-beta.2] — 2026-11-09 — beta.1 + design restored to the demo look
+
+### In plain words
+Same two visual fixes as v0.3.3, on top of the beta feature set (eye + fold).
+The working spinner is calm again, the remove-button hides until hover, and the
+Focus header label survives any window width, zoom included.
+
+### Technically
+- src/client.js: opacity pulse instead of spin; dismiss x hover-only; viewport MQ
+  (max-width 1199.98px) removed (hid Focus label <1200px innerWidth);
+  DNA_BUILD states31-wide
+- tests/states.unit.test.mjs: pins updated + no-MQ regression pin
+
+### Check
+- [ ] Eye icon visible in the Sessions header at ~1270px windows
+- [ ] Focus label + counters right-aligned at any width
+- [ ] Fold chevron still appears only when a Duty row exists
+
+### Known limitations
+- Fold state is session-only by design (a reload restores the nav).
+
+## [0.4.0-beta.1] - 2026-11-09
+
+### In plain words (demo-day fixes — the alpha is now actually usable)
+- **The eye icon is now visible.** The host clamped the header action row to the width of two icons, so the third button rendered but stayed clipped off-screen at every window size (caught in a live session, fixed by lifting that clamp inline for our button).
+- **The nav fold landed in its final shape:** the chevron lives on the "More" row and hides More + Plugins + Automation tasks; a Duty row survives when you have one. No Duty row → the chevron never appears and the native More dropdown stays untouched (universal gate — the feature is ours, other users keep stock DSH).
+- The fold is session-only (reload restores); the eye state persists across reloads.
+- Hardening: every interpolated attribute now goes through the escaper, including the ticking-duration anchor (security review finding).
+- Supersedes v0.4.0-alpha.1, whose eye icon was broken (invisible).
+
+## [0.4.0-alpha.1] - 2026-11-09
+
+### In plain words (dev channel — try the new controls, expect rough edges)
+- A new **eye icon** in the sidebar section header (next to search / settings) hides the whole session list; the header label keeps a count ("Workspaces · 13") so you always know how much is hidden. Click again to show.
+- The **"More" row in the left navigation** got a small chevron to tuck the nav stack (final shape landed in 0.4.0-alpha.2: More and the items above it hide, Duty stays when you have one).
+- The eye state survives a page reload; the nav fold is session-only — a reload restores the navigation.
+- Chinese hosts get localized tooltips; the detection of the nav row works in both EN and 中文.
+
+### Upgrading
+This is a pre-release on the `dev` branch. Install from the branch:
+```
+dsh plugin --profile web add github:almazom/dsh-needs-attention-sidebar#dev
+```
+Or wait for the stable v0.4.0 — nothing here is required.
 
 ## [0.3.0] - 2026-11-07
 

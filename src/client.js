@@ -50,14 +50,6 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       try { return new URL(ROUTE_REL, document.baseURI).href; } catch (e) { return "/" + ROUTE_REL; }
     }
     var LS_DISMISSED = "dsh-needs-attention.dismissed";
-    /* Beta-downgrade safety: the 0.4.x dev channel persists hide-sessions (eye)
-       and More-fold state in localStorage. This stable line implements neither,
-       so a user downgrading from beta would keep a hidden session list with no
-       restore control. Clear the beta-only keys once per boot (best-effort). */
-    try {
-      localStorage.removeItem("dsh-needs-attention.sessionsHidden");
-      localStorage.removeItem("dsh-needs-attention.moreCollapsed");
-    } catch (e) {}
     var LS_COLLAPSED = "dsh-needs-attention.collapsed";
     var LS_EXPANDED = "dsh-needs-attention.expanded";
     var LS_LASTVISIT = "dsh.na.lastVisit";
@@ -74,6 +66,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     var SHIELD_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>';
     var UNDO_ICON = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 7.2h6.1a3.4 3.4 0 1 1 0 6.8H7.4"/><path d="M6.7 4.5 4.1 7.2l2.6 2.6"/></svg>';
     var CHEV_ICON = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.4 8 9.4l3-3"/></svg>';
+    /* F1/F2 host-injection icons — host-exact tokens (live-measured 2026-11-09: 16px box, stroke-width 1) */
+    var EYE_OPEN16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8C3.2 4.9 5.4 3.2 8 3.2s4.8 1.7 6.5 4.8C12.8 11.1 10.6 12.8 8 12.8S3.2 11.1 1.5 8Z"/><circle cx="8" cy="8" r="2"/></svg>';
+    var EYE_OFF16 = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 8C3.2 4.9 5.4 3.2 8 3.2s4.8 1.7 6.5 4.8C12.8 11.1 10.6 12.8 8 12.8S3.2 11.1 1.5 8Z"/><path d="M2.8 13.2 13.2 2.8"/></svg>';
+    var FOLD_CHEV16 = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.4 6.2 8 9.8l3.6-3.6"/></svg>';
     var LVL = {
       fatal: { cls: "dna-lv-red", icon: ERR_ICON, word: "lvlFatal" },
       limit: { cls: "dna-lv-amber", icon: WARN_ICON, word: "lvlLimit" },
@@ -98,6 +94,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         less: "show less",
         grpFailed: "Failed", grpLook: "Look", grpWait: "Waiting",
         dismissed: "dismissed — ", undo: "Undo",
+        eyeHide: "Hide session list", eyeShow: "Show session list",
+        navFold: "Collapse navigation",
         openFail: "cannot open this session",
         opening: "opening ", tail: "…",
         lvlFatal: "Error · session stopped", lvlLimit: "Rate limit · 429, still alive",
@@ -114,6 +112,8 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
         less: "收起",
         grpFailed: "失败", grpLook: "需查看", grpWait: "等待",
         dismissed: "已忽略 — ", undo: "撤销",
+        eyeHide: "隐藏会话列表", eyeShow: "显示会话列表",
+        navFold: "折叠导航",
         openFail: "无法打开此会话",
         opening: "正在打开 ", tail: "…",
         lvlFatal: "错误 · 会话已停止", lvlLimit: "触发限流 · 429，仍在运行",
@@ -183,11 +183,18 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-tick { font-variant-numeric: tabular-nums; }",
       "@keyframes dna-pulse { 0%,100% { opacity:1; } 50% { opacity:.45; } }",
   "@keyframes dna-alert { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 6px 1px var(--dna-err); } }",
-  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot { animation: none; } }",
+  /* F1/F2 host-injected controls */
+  "[data-dna-eye] { display:inline-flex; align-items:center; }",
+  "[data-dna-eye][aria-expanded='false'] { opacity:.55; }",
+  ".dna-foldchev { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; border-radius:6px; color:inherit; cursor:pointer; opacity:.6; }",
+  ".dna-foldchev:hover { opacity:1; }",
+  ".dna-foldchev svg { transition: transform .15s ease; }",
+  ".dna-foldchev[data-dna-folded='1'] svg { transform: rotate(-90deg); }",
   /* Rail-mode cleanup (operator report 2026-11-09): when the host collapses the sidebar
      to the icon rail it marks our section root with *_rail / *_railIn classes — our block,
      injected eye and fold chevron would otherwise leak as clipped fragments into the rail. */
   '[class*="_rail"] [data-dna-block], [class*="_rail"] [data-dna-eye], [class*="_rail"] [data-dna-foldchev] { display: none !important; }',
+  "@media (prefers-reduced-motion: reduce) { .dna-badge.dna-alert { animation: none; } .dna-arow.dna-lv-work .dna-slot { animation: none; } .dna-foldchev svg { transition: none; } }",
       ".dna-new { display:inline-block; min-width:12px; margin:0 2px 0 -4px; padding:0 3px; border-radius:7px;"
         + " background: var(--dna-ok); color: var(--dsh-color-bg-base,#1b1b1c); font-size:10px; line-height:14px; text-align:center; font-weight:600; }",
       /* TC-016 zh typography: CJK strokes die at 10px caps — no uppercase, no tracking */
@@ -195,7 +202,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       ".dna-block[data-dna-zh] .dna-tab { font-size:13px; }",
       ".dna-block[data-dna-zh] .dna-div { font-size:12px; }",
       /* TC-004 rail degrade: <1200px the host sidebar is a 35px rail — badge-only head */
-      "/* viewport MQ removed 2026-11-09: badge-only head fired on ~1270px windows (zoom) and hid the Focus label — rail handled by [_rail] rule */",
+      "/* viewport MQ removed 2026-11-09: badge-only head fired on the operator's ~1270px window (browser zoom pushes innerWidth under 1200) and hid the Focus label — the true rail is handled by the [class*=_rail] display:none rule */",
     ].join("\n");
     var style = document.createElement("style");
     style.setAttribute("data-plugin-css", "dsh-needs-attention");
@@ -318,9 +325,10 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       var labelled = null, structural = null;
       for (var i = 0; i < labels.length; i++) {
         var text = (labels[i].textContent || "").trim();
+        var base = text.replace(/\s*·\s*\d+\s*$/, ""); /* F1 count cue tolerated on the label */
         var header = labels[i].closest('[class*="_sectionHeader"]') || labels[i].parentElement;
         if (!header) continue;
-        if (SECTION_LABELS.indexOf(text) !== -1) { setLocale(/[一-鿿]/.test(text) ? "zh" : "en"); return { el: header, how: "label:" + text }; }
+        if (SECTION_LABELS.indexOf(base) !== -1) { setLocale(/[一-鿿]/.test(base) ? "zh" : "en"); return { el: header, how: "label:" + base }; }
         if (!labelled && text) labelled = { el: header, how: "sectionLabel:" + text };
       }
       if (labelled) return labelled;
@@ -339,7 +347,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
 
     /** Diagnostic surface: a miss must be readable from the browser, not guessed
      *  from a screenshot. `window.__DNA_STATUS__` is the one place to look. */
-    var DNA_BUILD = "states26-clean";
+    var DNA_BUILD = "states36-openfull";
     function setStatus(patch) {
       try {
         var prev = window.__DNA_STATUS__ || {};
@@ -378,7 +386,7 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
     function liveRowHtml(s, hidden) {
       var lv = stateLvl(s);
       var right = s.state === "working"
-        ? '<span class="dna-t dna-tick" data-dna-tick data-since="' + s.at + '">' + esc(fmtDur(Date.now() - s.at)) + '</span>'
+        ? '<span class="dna-t dna-tick" data-dna-tick data-since="' + esc(s.at) + '">' + esc(fmtDur(Date.now() - s.at)) + '</span>'
         : '<span class="dna-t">' + esc(fmtRel(s.at)) + '</span>';
       /* operator report 2026-11-06: live rows MUST open the session like every sidebar
          row (Nielsen H2). Still no dismiss × — an alive session leaves its group alone. */
@@ -421,9 +429,139 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       try { localStorage.setItem(LS_TAB, sTab); } catch (e) {}
       render(true);
     }
+    /* F1 + F2 (operator 2026-11-09; TC-010/TC-011; judge-selected variants from the
+       stereo prototype): an eye button in the host section header hides the session
+       list (label cue "… · N" carries the hidden count); a chevron on the host "More"
+       nav row folds the nav stack (More stays as the restore control). Both persist in
+       localStorage and RE-APPLY on every render because the host re-renders React
+       subtrees and would drop injected attributes/nodes otherwise. */
+    var LS_SESSIONS_HIDDEN = "dsh-needs-attention.sessionsHidden";
+    var moreHidden = false; /* per-page only: reload restores the More row (operator 2026-11-09: no extra buttons, no persistence) */
+    var MORE_TOKENS = ["More", "更多"];
+    var DUTY_TOKENS = ["duty", "дежурный"]; /* universal rule (operator 2026-11-09): the Duty row survives the hide ONLY when a Duty row exists; otherwise the whole nav hides */ /* detection is bilingual — zh hosts localize the nav row */
+    function lsOn(k) { try { return localStorage.getItem(k) === "1"; } catch (e) { return false; } }
+    function lsMark(k, on) { try { if (on) localStorage.setItem(k, "1"); else localStorage.removeItem(k); } catch (e) {} }
+    function sessionEyeApply(header) {
+      if (!header || !header.querySelector) return;
+      var actions = header.querySelector('[class*="_headerActions"]');
+      var list = header.parentElement && header.parentElement.querySelector('[class*="_listArea"]');
+      if (!list && header.nextElementSibling && header.nextElementSibling.querySelector('[class*="_sessionRow"],[class*="_projectRow"]')) list = header.nextElementSibling;
+      var label = header.querySelector('[class*="_sectionLabel"]');
+      if (!actions || !list || !label) return;
+      /* host pins the actions row at 2 native icons: max-width:60px (+ overflow hidden
+         upstream) — a 3rd injected icon is laid out but clipped INVISIBLE
+         (operator-reported 2026-11-09 via Safari; DOM-presence checks missed it).
+         Lift the cap inline; inline style survives host CSS rules. */
+      if (actions.style.width !== "auto") actions.style.width = "auto";
+      if (actions.style.maxWidth !== "none") actions.style.maxWidth = "none";
+      var eye = actions.querySelector("[data-dna-eye]");
+      if (!eye) {
+        eye = document.createElement("button");
+        eye.type = "button";
+        eye.setAttribute("data-dna-eye", "1");
+        var proto = actions.querySelector('button[class*="_iconButton"]');
+        if (proto) eye.className = proto.className; /* host-exact look */
+        eye.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          lsMark(LS_SESSIONS_HIDDEN, !lsOn(LS_SESSIONS_HIDDEN));
+          sessionEyeApply(header);
+        });
+        actions.appendChild(eye);
+      }
+      var hidden = lsOn(LS_SESSIONS_HIDDEN);
+      var baseTxt = (label.textContent || "").trim().replace(/\s*·\s*\d+\s*$/, ""); /* derived per apply — never stale on host renames */
+      var n = list.querySelectorAll('[class*="_sessionRow"],[class*="_projectRow"]').length;
+      var t = hidden ? T.eyeShow : T.eyeHide;
+      var ico = hidden ? EYE_OFF16 : EYE_OPEN16;
+      /* write-guard: identical writes still mutate childList/attrs and would re-trigger
+         our own MutationObserver → self-sustaining render loop (review P2-1) */
+      if (eye.__dnaIco !== ico) { eye.innerHTML = ico; eye.__dnaIco = ico; }
+      if (eye.title !== t) { eye.title = t; eye.setAttribute("aria-label", t); }
+      var ax = hidden ? "false" : "true";
+      if (eye.getAttribute("aria-expanded") !== ax) eye.setAttribute("aria-expanded", ax);
+      var disp = hidden ? "none" : "";
+      if (list.style.display !== disp) list.style.display = disp;
+      var nxt = hidden ? baseTxt + " · " + n : baseTxt;
+      if (label.textContent !== nxt) label.textContent = nxt;
+    }
+    function navFoldApply() {
+      var nav = document.querySelector('[class*="_panelList"]');
+      if (!nav) return;
+      var rows = nav.querySelectorAll("button");
+      var moreRow = null, i;
+      for (i = 0; i < rows.length; i++) {
+        var t = (rows[i].textContent || "").trim();
+        var al = rows[i].getAttribute("aria-label");
+        if (MORE_TOKENS.indexOf(al) !== -1 || MORE_TOKENS.indexOf(t) !== -1) { moreRow = rows[i]; break; }
+      }
+      /* universal gate (operator 2026-11-09): the fold feature exists only when a Duty row
+         can survive it — without Duty the chevron is not rendered at all and the native
+         More dropdown stays untouched for other users */
+      var hasDuty = false, gi;
+      for (gi = 0; gi < rows.length; gi++) {
+        var gt = ((rows[gi].textContent || "") + " " + (rows[gi].getAttribute("aria-label") || "")).toLowerCase();
+        if (DUTY_TOKENS.some(function (tok) { return gt.indexOf(tok) !== -1; })) { hasDuty = true; break; }
+      }
+      if (!hasDuty) {
+        if (moreHidden) {
+          /* Duty vanished mid-session: never leave the nav hidden without its anchor */
+          moreHidden = false;
+          for (i = 0; i < rows.length; i++) { if (rows[i].style.display !== "") rows[i].style.display = ""; }
+          var nsG = document.querySelector('button[class*="_newSession"]');
+          if (nsG && nsG.style.display !== "") nsG.style.display = "";
+        }
+        return;
+      }
+      if (!moreRow) {
+        /* review P1: if the More row vanished (host rename/localization) while hidden,
+           restore everything — never leave the nav hidden without its restore control */
+        moreHidden = false;
+        for (i = 0; i < rows.length; i++) { if (rows[i].style.display === "none") rows[i].style.display = ""; }
+        var ns0 = document.querySelector('button[class*="_newSession"]');
+        if (ns0 && ns0.style.display === "none") ns0.style.display = "";
+        return;
+      }
+      var chev = moreRow.querySelector("[data-dna-foldchev]");
+      if (!chev) {
+        chev = document.createElement("span"); /* span, not button: the row itself is a <button> */
+        chev.className = "dna-foldchev";
+        chev.setAttribute("data-dna-foldchev", "1");
+        chev.setAttribute("role", "button");
+        chev.setAttribute("tabindex", "0");
+        chev.innerHTML = FOLD_CHEV16;
+        chev.__dnaIco = FOLD_CHEV16;
+        chev.addEventListener("click", function (ev) {
+          ev.stopPropagation(); ev.preventDefault();
+          moreHidden = true; /* operator 2026-11-09: nav hides except Duty — no stub, no persistence; reload restores */
+          navFoldApply();
+        });
+        chev.addEventListener("keydown", function (ev) {
+          if (ev.key !== "Enter" && ev.key !== " ") return;
+          ev.stopPropagation(); ev.preventDefault();
+          moreHidden = true;
+          navFoldApply();
+        });
+        moreRow.appendChild(chev);
+      }
+      /* operator 2026-11-09: hide More + Plugins + Automation tasks, keep Duty; New Session stays */
+      for (i = 0; i < rows.length; i++) {
+        var t2 = ((rows[i].textContent || "") + " " + (rows[i].getAttribute("aria-label") || "")).toLowerCase();
+        var isDutyRow = DUTY_TOKENS.some(function (tok) { return t2.indexOf(tok) !== -1; });
+        var want = (moreHidden && !isDutyRow) ? "none" : "";
+        if (rows[i].style.display !== want) rows[i].style.display = want;
+      }
+      var ft = T.navFold;
+      if (chev.__dnaIco !== FOLD_CHEV16) { chev.innerHTML = FOLD_CHEV16; chev.__dnaIco = FOLD_CHEV16; }
+      if (chev.title !== ft) { chev.title = ft; chev.setAttribute("aria-label", ft); }
+    }
+    function focusFeatures(anchor) {
+      try { if (anchor && anchor.el) sessionEyeApply(anchor.el); } catch (e) {}
+      try { navFoldApply(); } catch (e) {}
+    }
     function render(force) {
       ensureCss();
       var anchor = findAnchor();
+      focusFeatures(anchor); /* TC-010/011: idempotent re-apply, independent of block emptiness */
       if (!anchor || !anchor.el) {
         setStatus({ anchor: null, block: !!document.querySelector("[data-dna-block]"), rows: rows.length, states: stateRows.length, err: "no-anchor" });
         return; /* never a wrong slot */
@@ -548,21 +686,35 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
          Rebuilt: activate the session's own workspace row first (the host then renders
          that workspace's session rows), then click the session row once it appears.
          Slug matching is suffix-based: slug "--Users-…-temp--" ends with host title
-         "temp"; "…-default-workspace--" ends with "Default workspace". */
+         "temp"; "…-default-workspace--" ends with "Default workspace". If the group
+         then hides the row behind "Show N more sessions", the overflow row is clicked
+         the group paginates instead — each click on "Show N more sessions" reveals
+         5 more rows (measured 2026-11-10: 54 -> 49) — so the poll walks it. */
       var want = normWs(ws);
       if (want) {
         var wr = document.querySelectorAll('[data-row-key^="workspace:"]');
         for (var i = 0; i < wr.length; i++) {
           var hn = normWs(wr[i].textContent);
           if (hn && want.slice(-hn.length) === hn) {
+            var matchedWsKey = wr[i].getAttribute("data-row-key") || "";
             wr[i].click();
             toast(T.opening + id8(sid) + T.tail, false);
+            var ovfKey = matchedWsKey.slice(10); /* "workspace:<uuid>" -> "<uuid>" */
+            var ovfMisses = 0;
             var t0 = Date.now();
-            (function poll() {
+            (function attempt() {
               var row = document.querySelector('[data-row-key="session:' + cssEsc(sid) + '"]');
               if (row) { row.click(); return; }
-              if (Date.now() - t0 < 2500) setTimeout(poll, 120);
-              else toast(T.openFail, false);
+              if (Date.now() - t0 >= 10000) { toast(T.openFail, false); return; }
+              /* burst-expand the group's "Show N more sessions" — each click reveals 5 rows,
+                 and the host resets pagination on its own data refreshes (~2s cadence,
+                 measured 2026-11-10), so the walk has to outrun the next reset. When the
+                 group is fully revealed and the row is still absent, the session's dir is a
+                 dead workspace (deleted/recreated on the host side) — fail honestly. */
+              var ovf = document.querySelector('[data-row-key="overflow:' + cssEsc(ovfKey) + '"]');
+              if (ovf) { ovfMisses = 0; ovf.click(); setTimeout(attempt, 140); }
+              else if (++ovfMisses >= 2) { toast(T.openFail, false); return; }
+              else setTimeout(attempt, 300);
             })();
             return;
           }
@@ -731,6 +883,11 @@ if (typeof window !== "undefined" && window.__ModuleLoader__) window.__ModuleLoa
       pending = true;
       requestAnimationFrame(function () {
         pending = false;
+        /* TC-010/011: React re-renders wipe our injected controls (eye/chev are
+           foreign to the host vdom) — re-apply them directly on any host DOM
+           change, not only on the poll render cadence. Writes inside are
+           guarded, so this self-quiesces after one append. */
+        try { focusFeatures(findAnchor()); } catch (e) {}
         if ((rows.length || stateRows.length) && !document.querySelector("[data-dna-block]")) render(true);
       });
     });
